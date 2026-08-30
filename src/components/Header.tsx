@@ -8,13 +8,14 @@ import {
   Sun,
   Bookmark,
   Award,
-  Film
+  Film,
+  Gamepad2
 } from 'lucide-react';
 import type { UserProgress } from '../types/chinese';
 import { ScoreBadge } from './Common/ScoreBadge';
 import { playSoundEffect } from '../utils/speech';
 
-export type ActiveTabType = 'dialogues' | 'shadowing' | 'tones' | 'practice' | 'hsk' | 'notebook' | 'chat';
+export type ActiveTabType = 'dialogues' | 'shadowing' | 'tones' | 'practice' | 'hsk' | 'games' | 'notebook' | 'chat';
 
 interface HeaderProps {
   activeTab: ActiveTabType;
@@ -38,6 +39,7 @@ export const Header: React.FC<HeaderProps> = ({
   const navItems: { id: ActiveTabType; label: string; icon: React.ReactNode }[] = [
     { id: 'dialogues', label: 'Hội Thoại', icon: <BookOpen size={17} /> },
     { id: 'shadowing', label: 'Video Shadowing', icon: <Film size={17} /> },
+    { id: 'games', label: 'Trò Chơi', icon: <Gamepad2 size={17} /> },
     { id: 'tones', label: 'Luyện 4 Thanh', icon: <Music size={17} /> },
     { id: 'practice', label: 'Luyện Tập', icon: <Puzzle size={17} /> },
     { id: 'hsk', label: 'Đề Thi HSK', icon: <Award size={17} /> },

@@ -5,6 +5,7 @@ import { DialogueList } from './components/Dialogue/DialogueList';
 import { DialogueViewer } from './components/Dialogue/DialogueViewer';
 import { RoleplayMode } from './components/Dialogue/RoleplayMode';
 import { ShadowingHub } from './components/Shadowing/ShadowingHub';
+import { GameArena } from './components/Games/GameArena';
 import { ToneMaster } from './components/ToneMaster/ToneMaster';
 import { PracticeHub } from './components/Practice/PracticeHub';
 import { HSKExamHub } from './components/HSKExam/HSKExamHub';
@@ -119,6 +120,9 @@ export function App() {
 
         {/* SHADOWING TAB */}
         {activeTab === 'shadowing' && <ShadowingHub />}
+
+        {/* GAMES TAB */}
+        {activeTab === 'games' && <GameArena />}
 
         {/* TONE MASTER TAB */}
         {activeTab === 'tones' && <ToneMaster />}

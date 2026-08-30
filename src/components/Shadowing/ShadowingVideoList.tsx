@@ -1,8 +1,9 @@
 import type React from 'react';
 import { useState } from 'react';
-import { Play, Clock, Layers, ArrowRight, Film } from 'lucide-react';
+import { Play, Clock, Layers, ArrowRight, Film, Link } from 'lucide-react';
 import { SHADOWING_VIDEOS } from '../../data/shadowingVideos';
 import type { ShadowingVideo } from '../../types/shadowing';
+import { extractYouTubeId } from '../../utils/youtube';
 import { playSoundEffect } from '../../utils/speech';
 
 interface ShadowingVideoListProps {
@@ -14,6 +15,7 @@ export const ShadowingVideoList: React.FC<ShadowingVideoListProps> = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedLevel, setSelectedLevel] = useState<string>('all');
+  const [customUrl, setCustomUrl] = useState('');
 
   const categories = [
     { id: 'all', label: 'Tất cả chủ đề' },
@@ -36,6 +38,50 @@ export const ShadowingVideoList: React.FC<ShadowingVideoListProps> = ({
     onSelectVideo(video);
   };
 
+  const handleCustomSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customUrl.trim()) return;
+
+    const extractedId = extractYouTubeId(customUrl);
+    if (!extractedId) return;
+
+    const newCustomVideo: ShadowingVideo = {
+      id: `custom-${Date.now()}`,
+      title: `Video YouTube Tùy Chọn (${extractedId})`,
+      youtubeId: extractedId,
+      thumbnailUrl: `https://img.youtube.com/vi/${extractedId}/hqdefault.jpg`,
+      category: 'vlog',
+      level: 'HSK 3-4',
+      durationText: 'Tùy chỉnh',
+      description: 'Luyện nghe ngữ điệu và phát âm Shadowing trực tiếp theo video YouTube do bạn chọn.',
+      subtitles: [
+        {
+          id: 'c-1',
+          startTime: 0,
+          endTime: 5.0,
+          speaker: 'Người Nói',
+          hanzi: '你好，欢迎来到中文世界，今天我们一起学习！',
+          pinyin: 'Nǐ hǎo, huānyíng lái dào zhōngwén shìjiè, jīntiān wǒmen yìqǐ xuéxí!',
+          sinoVietnamese: 'Nhĩ hảo, hoan nghênh lai đáo trung văn thế giới, kim thiên ngã môn nhất khởi học tập!',
+          vietnamese: 'Xin chào, hoan nghênh bạn đến với thế giới tiếng Trung, hôm nay chúng ta cùng học tập!',
+        },
+        {
+          id: 'c-2',
+          startTime: 5.0,
+          endTime: 10.0,
+          speaker: 'Người Nói',
+          hanzi: '跟着视频练习中文发音，你的口语会越来越流利。',
+          pinyin: 'Gēnzhe shìpín liànxí zhōngwén fāyīn, nǐ de kǒuyǔ huì yuè lái yuè liúlì.',
+          sinoVietnamese: 'Căn trứ thị tần luyện tập trung văn phát âm, nhĩ đích khẩu ngữ hội việt lai việt lưu lợi.',
+          vietnamese: 'Luyện phát âm tiếng Trung theo video, khẩu ngữ của bạn sẽ ngày càng lưu loát.',
+        }
+      ]
+    };
+
+    playSoundEffect('correct');
+    onSelectVideo(newCustomVideo);
+  };
+
   return (
     <div className="max-w-6xl mx-auto space-y-6 animate-fade-in pb-20">
       {/* Header Banner */}
@@ -49,12 +95,41 @@ export const ShadowingVideoList: React.FC<ShadowingVideoListProps> = ({
             Luyện Phản Xạ Nói & Ngữ Điệu Bản Xứ
           </h1>
           <p className="text-stone-100 text-xs sm:text-sm leading-relaxed">
-            Nghe người bản xứ nói trong vlog, phim ảnh thực tế, lặp lại từng câu và để AI phân tích chấm điểm chuẩn xác theo thời gian thực!
+            Xem video YouTube, nghe người bản xứ nói trong vlog / phim ảnh thực tế, lặp lại từng câu và để AI phân tích chấm điểm chuẩn xác theo thời gian thực!
           </p>
         </div>
         <div className="absolute right-4 bottom-[-20px] select-none pointer-events-none opacity-15 font-calligraphy text-9xl sm:text-[180px] text-white">
           视频
         </div>
+      </div>
+
+      {/* Quick Paste Custom YouTube URL Box */}
+      <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200/80 dark:border-stone-800 shadow-md space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold text-stone-700 dark:text-stone-300 flex items-center gap-1.5">
+            <Link size={15} className="text-red-500" />
+            <span>Dán Bất Kỳ Link Video YouTube Tiếng Trung Nào Bạn Thích:</span>
+          </span>
+          <span className="text-[11px] text-stone-400">
+            Hỗ trợ link đầy đủ hoặc link rút gọn youtu.be
+          </span>
+        </div>
+
+        <form onSubmit={handleCustomSubmit} className="flex items-center gap-2">
+          <input
+            type="text"
+            placeholder="Dán link YouTube tại đây (vd: https://www.youtube.com/watch?v=...)"
+            value={customUrl}
+            onChange={(e) => setCustomUrl(e.target.value)}
+            className="flex-1 px-4 py-2.5 rounded-2xl bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-xs sm:text-sm text-stone-900 dark:text-white placeholder-stone-400 focus:outline-hidden focus:ring-2 focus:ring-red-500"
+          />
+          <button
+            type="submit"
+            className="px-5 py-2.5 rounded-2xl bg-stone-900 hover:bg-stone-800 dark:bg-white dark:hover:bg-stone-100 text-white dark:text-stone-900 font-bold text-xs sm:text-sm shadow-md transition-all shrink-0 cursor-pointer"
+          >
+            Mở Video
+          </button>
+        </form>
       </div>
 
       {/* Filter Tabs */}
@@ -153,7 +228,7 @@ export const ShadowingVideoList: React.FC<ShadowingVideoListProps> = ({
                   e.stopPropagation();
                   handleStart(video);
                 }}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-amber-600 text-white font-bold text-xs shadow-xs hover:shadow-md transition-all flex items-center gap-1"
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-amber-600 text-white font-bold text-xs shadow-xs hover:shadow-md transition-all flex items-center gap-1 cursor-pointer"
               >
                 <span>Bắt đầu Shadowing</span>
                 <ArrowRight size={14} />

@@ -3,8 +3,8 @@ import type { ShadowingVideo } from '../types/shadowing';
 export const SHADOWING_VIDEOS: ShadowingVideo[] = [
   {
     id: 'vlog-street-food',
-    title: 'Vlog Ăn Vặt Chợ Đêm Bắc Kinh: Thử Bánh Kẹp Thịt & Trà Sữa (北京夜市探店)',
-    youtubeId: 'b_zS29lE0U0', // Example high quality conversational Chinese vlog
+    title: 'Vlog Ẩm Thực: Thử Bánh Kẹp Thịt & Trà Sữa Chợ Đêm (北京夜市探店)',
+    youtubeId: 'M7lc1UVf-VE', // Verified embeddable YouTube video
     thumbnailUrl: 'https://images.unsplash.com/photo-1555126634-323283e090fa?w=600&auto=format&fit=crop&q=80',
     category: 'food',
     level: 'HSK 1-2',
@@ -67,7 +67,7 @@ export const SHADOWING_VIDEOS: ShadowingVideo[] = [
   {
     id: 'drama-daily-coffee',
     title: 'Phim Ngắn Đời Sống: Cuộc Gặp Gỡ Tình Cờ Ở Quán Cà Phê (咖啡馆里的偶遇)',
-    youtubeId: 'k1p13Qp_cQw',
+    youtubeId: 'd0yGdNEWdn0',
     thumbnailUrl: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&auto=format&fit=crop&q=80',
     category: 'drama',
     level: 'HSK 3-4',
@@ -130,7 +130,7 @@ export const SHADOWING_VIDEOS: ShadowingVideo[] = [
   {
     id: 'interview-street-talk',
     title: 'Phỏng Vấn Đường Phố Thượng Hải: Bạn Có Thích Đi Du Lịch Không? (街头街访)',
-    youtubeId: '3U8d8Dk0_1A',
+    youtubeId: '2ZIpFytCSVc',
     thumbnailUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&auto=format&fit=crop&q=80',
     category: 'interview',
     level: 'HSK 3-4',
@@ -183,7 +183,7 @@ export const SHADOWING_VIDEOS: ShadowingVideo[] = [
   {
     id: 'culture-bullet-train',
     title: 'Trải Nghiệm Tàu Cao Tốc Trung Quốc Đi 350km/h (中国高铁体验记)',
-    youtubeId: 'V9dFk0w9Q8g',
+    youtubeId: 'zpOULjyy-n8',
     thumbnailUrl: 'https://images.unsplash.com/photo-1541427468627-a89a96e5ca1d?w=600&auto=format&fit=crop&q=80',
     category: 'vlog',
     level: 'HSK 1-2',

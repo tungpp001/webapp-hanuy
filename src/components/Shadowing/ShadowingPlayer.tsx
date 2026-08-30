@@ -6,12 +6,16 @@ import {
   Play, 
   Pause, 
   SkipBack, 
-  SkipForward
+  SkipForward,
+  Link,
+  Volume2,
+  ExternalLink
 } from 'lucide-react';
 import type { ShadowingVideo, SubtitleSegment } from '../../types/shadowing';
 import { ShadowingRecorder } from './ShadowingRecorder';
 import { WordModal } from '../Dialogue/WordModal';
-import { playSoundEffect } from '../../utils/speech';
+import { extractYouTubeId } from '../../utils/youtube';
+import { speakChinese, playSoundEffect } from '../../utils/speech';
 
 interface ShadowingPlayerProps {
   video: ShadowingVideo;
@@ -22,6 +26,8 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
   const [activeSegmentIndex, setActiveSegmentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
+  const [customYouTubeUrl, setCustomYouTubeUrl] = useState('');
+  const [currentVideoId, setCurrentVideoId] = useState(video.youtubeId);
 
   // Subtitle layer toggles
   const [showPinyin, setShowPinyin] = useState(true);
@@ -42,14 +48,18 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
   // Helper to send postMessage commands to YouTube IFrame API
   const sendIframeCommand = (command: string, args: any[] = []) => {
     if (!iframeRef.current || !iframeRef.current.contentWindow) return;
-    iframeRef.current.contentWindow.postMessage(
-      JSON.stringify({
-        event: 'command',
-        func: command,
-        args: args,
-      }),
-      '*'
-    );
+    try {
+      iframeRef.current.contentWindow.postMessage(
+        JSON.stringify({
+          event: 'command',
+          func: command,
+          args: args,
+        }),
+        '*'
+      );
+    } catch (e) {
+      console.warn('IFrame postMessage error', e);
+    }
   };
 
   const seekToSegment = (index: number) => {
@@ -93,6 +103,22 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
     setPlaybackSpeed(speed);
     sendIframeCommand('setPlaybackRate', [speed]);
     playSoundEffect('click');
+  };
+
+  const handleApplyCustomUrl = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customYouTubeUrl.trim()) return;
+    const extractedId = extractYouTubeId(customYouTubeUrl);
+    if (extractedId) {
+      setCurrentVideoId(extractedId);
+      playSoundEffect('click');
+      setCustomYouTubeUrl('');
+    }
+  };
+
+  const handlePlayTTSFallback = (text: string) => {
+    playSoundEffect('click');
+    speakChinese(text, playbackSpeed);
   };
 
   // Word click lookup
@@ -162,6 +188,36 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
         </div>
       </div>
 
+      {/* Quick Paste Custom YouTube URL Bar */}
+      <form onSubmit={handleApplyCustomUrl} className="flex items-center gap-2 p-3 bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-xs">
+        <div className="relative flex-1">
+          <Link className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" size={15} />
+          <input
+            type="text"
+            placeholder="Dán link YouTube bất kỳ để phát và luyện Shadowing (vd: https://www.youtube.com/watch?v=...)"
+            value={customYouTubeUrl}
+            onChange={(e) => setCustomYouTubeUrl(e.target.value)}
+            className="w-full pl-9 pr-3 py-2 text-xs sm:text-sm rounded-xl bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-white placeholder-stone-400 border border-stone-200 dark:border-stone-700 focus:outline-hidden focus:ring-2 focus:ring-red-500"
+          />
+        </div>
+        <button
+          type="submit"
+          className="px-4 py-2 bg-stone-900 hover:bg-stone-800 dark:bg-white dark:hover:bg-stone-100 text-white dark:text-stone-900 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer"
+        >
+          Tải Video
+        </button>
+        <a
+          href={`https://www.youtube.com/watch?v=${currentVideoId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="p-2 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-500 hover:text-red-600 dark:hover:text-red-400 transition-colors hidden sm:flex items-center gap-1 text-xs font-semibold"
+          title="Mở trên YouTube"
+        >
+          <ExternalLink size={14} />
+          <span>YouTube</span>
+        </a>
+      </form>
+
       {/* Main Grid: YouTube Video + Sync Subtitles & Shadowing Studio */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column (7 Cols): YouTube Video Embed + Segment Controls */}
@@ -170,10 +226,11 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
           <div className="relative rounded-3xl overflow-hidden bg-black shadow-xl aspect-video border-2 border-stone-800">
             <iframe
               ref={iframeRef}
-              src={`https://www.youtube.com/embed/${video.youtubeId}?enablejsapi=1&origin=${typeof window !== 'undefined' ? window.location.origin : ''}&rel=0&modestbranding=1`}
+              key={currentVideoId}
+              src={`https://www.youtube.com/embed/${currentVideoId}?enablejsapi=1&autoplay=0&rel=0&modestbranding=1&playsinline=1`}
               title={video.title}
               className="absolute inset-0 w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
             />
           </div>
@@ -197,7 +254,7 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
               ))}
             </div>
 
-            {/* Prev, Play/Pause, Replay, Next */}
+            {/* Prev, Play/Pause, Replay, Next, TTS Fallback */}
             <div className="flex items-center gap-2">
               <button
                 onClick={handlePrevSegment}
@@ -214,7 +271,7 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
                 title="Phát lại câu hiện tại"
               >
                 <RotateCcw size={14} />
-                <span>Lặp câu này</span>
+                <span>Lặp câu</span>
               </button>
 
               <button
@@ -223,6 +280,14 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
                 title={isPlaying ? 'Tạm dừng video' : 'Phát video'}
               >
                 {isPlaying ? <Pause size={16} /> : <Play size={16} />}
+              </button>
+
+              <button
+                onClick={() => handlePlayTTSFallback(activeSegment.hanzi)}
+                className="p-2 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:text-red-600 hover:bg-red-50 transition-all"
+                title="Phát âm thanh mẫu (TTS tiếng Trung bản xứ)"
+              >
+                <Volume2 size={16} />
               </button>
 
               <button
@@ -253,7 +318,7 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
             </div>
 
             {/* Scrollable Subtitle Segment List */}
-            <div className="space-y-3 max-h-[600px] overflow-y-auto pr-1">
+            <div className="space-y-3 max-h-[560px] overflow-y-auto pr-1">
               {video.subtitles.map((sub, idx) => {
                 const isActive = activeSegmentIndex === idx;
 

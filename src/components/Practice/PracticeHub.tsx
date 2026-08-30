@@ -7,17 +7,19 @@ import {
   CheckCircle2, 
   XCircle, 
   Sparkles, 
-  Volume2
+  Volume2,
+  PenTool
 } from 'lucide-react';
 import { SENTENCE_BUILDER_QUIZZES, LISTENING_QUIZZES } from '../../data/quizzes';
 import { FLASHCARDS } from '../../data/vocabulary';
 import { AudioButton } from '../Common/AudioButton';
+import { HanziWriter } from './HanziWriter';
 import { speakChinese, playSoundEffect } from '../../utils/speech';
 import { addXP } from '../../utils/storage';
 import { CelebrationModal } from '../Common/CelebrationModal';
 
 export const PracticeHub: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'sentence' | 'listening' | 'flashcards'>('sentence');
+  const [activeTab, setActiveTab] = useState<'sentence' | 'listening' | 'flashcards' | 'hanzi'>('sentence');
 
   // Sentence Builder State
   const [sentenceIndex, setSentenceIndex] = useState(0);
@@ -193,6 +195,17 @@ export const PracticeHub: React.FC = () => {
         >
           <Layers size={16} />
           <span>Flashcard 3D</span>
+        </button>
+        <button
+          onClick={() => setActiveTab('hanzi')}
+          className={`flex-1 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all ${
+            activeTab === 'hanzi'
+              ? 'bg-red-600 text-white shadow-sm'
+              : 'text-stone-600 dark:text-stone-300 hover:text-stone-900'
+          }`}
+        >
+          <PenTool size={16} />
+          <span>Luyện Viết</span>
         </button>
       </div>
 
@@ -515,6 +528,11 @@ export const PracticeHub: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* ---------------------------------------------------- */}
+      {/* 4. HANZI CANVAS WRITER */}
+      {/* ---------------------------------------------------- */}
+      {activeTab === 'hanzi' && <HanziWriter />}
 
       {/* Completion Modal */}
       <CelebrationModal

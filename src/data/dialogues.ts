@@ -993,5 +993,274 @@ export const DIALOGUES: Dialogue[] = [
         ]
       }
     ]
+  },
+  {
+    id: 'boba-9',
+    title: 'Tại Quán Trà Sữa: Chọn Đường Đá & Topping',
+    titleCn: '在奶茶店点单',
+    pinyin: 'Zài nǎichádiàn diǎndān',
+    sinoVietnamese: 'Tại nãi trà điếm điểm đơn',
+    level: 'HSK 1',
+    category: 'restaurant',
+    categoryNameVn: 'Ăn Uống',
+    icon: '🧋',
+    description: 'Tự tin gọi trà sữa, yêu cầu tỉ lệ đường (30%, 50%, 70%), lượng đá và thêm các loại topping trân châu thạch dừa.',
+    durationMinutes: 4,
+    roleplayGoal: {
+      roleA: 'Nhân viên quán trà sữa (店员 - Diànyuán)',
+      roleB: 'Khách hàng (顾客 - Gùkè)',
+      mission: 'Đóng vai khách gọi 1 ly trà sữa trân châu lớn, 30% đường, ít đá và thêm thạch dừa.'
+    },
+    grammarPoints: [
+      {
+        title: 'Quy tắc chọn độ ngọt và đá trong tiếng Trung',
+        structure: '[Đường]: 全糖(100%), 少糖(70%), 半糖(50%), 微糖(30%), 无糖(0%) + [Đá]: 正常冰, 少冰, 去冰, 温/热',
+        explanation: 'Khẩu ngữ gọi đồ uống cực kỳ phổ biến tại Trung Quốc và Đài Loan.',
+        examples: [
+          { cn: '我要一杯珍珠奶茶，微糖少冰。', pinyin: 'Wǒ yào yì bēi zhēnzhū nǎichá, wēi táng shǎo bīng.', vn: 'Cho tôi một cốc trà sữa trân châu, 30% đường ít đá.' }
+        ]
+      }
+    ],
+    lines: [
+      {
+        id: 'bb9-1',
+        speaker: {
+          id: 'staff',
+          name: 'Nhân viên',
+          nameCn: '店员',
+          role: 'A',
+          avatar: '🥤',
+          gender: 'female'
+        },
+        hanzi: '您好，请问想喝什么？今天有第二杯半价活动哦！',
+        pinyin: 'Nín hǎo, qǐngwèn xiǎng hē shénme? Jīntiān yǒu dì-èr bēi bànjià huódòng ó!',
+        sinoVietnamese: 'Nâm hảo, thỉnh vấn tưởng hát thập ma? Kim thiên hữu đệ nhị bôi bán giá hoạt động nga!',
+        vietnamese: 'Xin chào, xin hỏi quý khách muốn uống gì? Hôm nay có chương trình cốc thứ 2 giảm 50% giá đấy ạ!',
+        words: [
+          { hanzi: '第二杯', pinyin: 'dì-èr bēi', sinoVietnamese: 'Đệ nhị bôi', meaning: 'Cốc thứ hai', pos: 'Cụm số từ' },
+          { hanzi: '半价', pinyin: 'bànjià', sinoVietnamese: 'Bán giá', meaning: 'Nửa giá (giảm 50%)', pos: 'Danh từ' },
+          { hanzi: '活动', pinyin: 'huódòng', sinoVietnamese: 'Hoạt động', meaning: 'Chương trình khuyến mãi / hoạt động', pos: 'Danh từ' }
+        ]
+      },
+      {
+        id: 'bb9-2',
+        speaker: {
+          id: 'customer',
+          name: 'Bạn',
+          nameCn: '顾客 (Bạn)',
+          role: 'B',
+          avatar: '🙋‍♂️',
+          gender: 'male'
+        },
+        hanzi: '我要一杯大杯珍珠奶茶，微糖、少冰，再加一份椰果。',
+        pinyin: 'Wǒ yào yì bēi dà bēi zhēnzhū nǎichá, wēi táng, shǎo bīng, zài jiā yí fèn yēguǒ.',
+        sinoVietnamese: 'Ngã yếu nhất bôi đại bôi trân châu nãi trà, vi đường, thiểu băng, tái gia nhất phần da quả.',
+        vietnamese: 'Tôi muốn 1 cốc trà sữa trân châu size lớn, 30% đường, ít đá, và cho thêm một phần thạch dừa.',
+        words: [
+          { hanzi: '珍珠奶茶', pinyin: 'zhēnzhū nǎichá', sinoVietnamese: 'Trân châu nãi trà', meaning: 'Trà sữa trân châu', pos: 'Danh từ' },
+          { hanzi: '微糖', pinyin: 'wēi táng', sinoVietnamese: 'Vi đường', meaning: '30% đường (ngọt nhẹ)', pos: 'Cụm từ' },
+          { hanzi: '椰果', pinyin: 'yēguǒ', sinoVietnamese: 'Da quả', meaning: 'Thạch dừa (Nata de coco)', pos: 'Danh từ' }
+        ]
+      },
+      {
+        id: 'bb9-3',
+        speaker: {
+          id: 'staff',
+          name: 'Nhân viên',
+          nameCn: '店员',
+          role: 'A',
+          avatar: '🥤',
+          gender: 'female'
+        },
+        hanzi: '好的，一共十八块。请拿好小票，凭号码取餐。',
+        pinyin: 'Hǎo de, yígòng shíbā kuài. Qǐng ná hǎo xiǎopiào, píng hàomǎ qǔcān.',
+        sinoVietnamese: 'Hảo đích, nhất cộng thập bát khối. Thỉnh nã hảo tiểu phiếu, bằng hiệu mã thủ xan.',
+        vietnamese: 'Vâng, tổng cộng là 18 tệ. Xin cầm phiếu hóa đơn, đợi gọi số để nhận đồ nhé.',
+        words: [
+          { hanzi: '一共', pinyin: 'yígòng', sinoVietnamese: 'Nhất cộng', meaning: 'Tổng cộng', pos: 'Phó từ' },
+          { hanzi: '小票', pinyin: 'xiǎopiào', sinoVietnamese: 'Tiểu phiếu', meaning: 'Hóa đơn / phiếu thanh toán nhỏ', pos: 'Danh từ' },
+          { hanzi: '凭号码', pinyin: 'píng hàomǎ', sinoVietnamese: 'Bằng hiệu mã', meaning: 'Dựa theo số thứ tự', pos: 'Cụm từ' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'train-10',
+    title: 'Mua Vé Tàu Cao Tốc (Ga Tàu Hỏa)',
+    titleCn: '在高铁站买票',
+    pinyin: 'Zài gāotiězhàn mǎipiào',
+    sinoVietnamese: 'Tại cao thiết trạm mãi phiếu',
+    level: 'HSK 2',
+    category: 'travel',
+    categoryNameVn: 'Du Lịch',
+    icon: '🚄',
+    description: 'Học cách mua vé tàu cao tốc đi Bắc Kinh/Thượng Hải, chọn vé hạng nhất, hạng nhì và đổi giờ khởi hành.',
+    durationMinutes: 5,
+    roleplayGoal: {
+      roleA: 'Nhân viên bán vé (售票员 - Shòupiàoyuán)',
+      roleB: 'Hành khách (乘客 - Chéngkè)',
+      mission: 'Đóng vai mua 1 vé tàu cao tốc đến Thượng Hải chuyến sáng mai, chọn ghế hạng 2 cạnh cửa sổ.'
+    },
+    grammarPoints: [
+      {
+        title: 'Cấu trúc đặt vé: "买一张去...的票"',
+        structure: '我想买 [Số lượng] 张去 [Địa điểm] 的 [G28次 / 高铁] 票',
+        explanation: 'Mẫu câu chuẩn khi mua vé tại quầy ga đường sắt Trung Quốc.',
+        examples: [
+          { cn: '买两张去北京的二等座票。', pinyin: 'Mǎi liǎng zhāng qù Běijīng de èrděngzuò piào.', vn: 'Mua hai vé hạng nhì đi Bắc Kinh.' }
+        ]
+      }
+    ],
+    lines: [
+      {
+        id: 'tr10-1',
+        speaker: {
+          id: 'ticket_seller',
+          name: 'Nhân viên vé',
+          nameCn: '售票员',
+          role: 'A',
+          avatar: '🎫',
+          gender: 'female'
+        },
+        hanzi: '您好，请问您要去哪里？买哪一天的车票？',
+        pinyin: 'Nín hǎo, qǐngwèn nín yào qù nǎlǐ? Mǎi nǎ yì tiān de chēpiào?',
+        sinoVietnamese: 'Nâm hảo, thỉnh vấn nâm yếu khứ na lý? Mãi na nhất thiên đích xa phiếu?',
+        vietnamese: 'Xin chào, xin hỏi quý khách muốn đi đâu? Mua vé tàu ngày nào ạ?',
+        words: [
+          { hanzi: '车票', pinyin: 'chēpiào', sinoVietnamese: 'Xa phiếu', meaning: 'Vé xe / vé tàu', pos: 'Danh từ' },
+          { hanzi: '哪一天', pinyin: 'nǎ yì tiān', sinoVietnamese: 'Na nhất thiên', meaning: 'Ngày nào', pos: 'Đại từ' }
+        ]
+      },
+      {
+        id: 'tr10-2',
+        speaker: {
+          id: 'passenger',
+          name: 'Bạn',
+          nameCn: '乘客 (Bạn)',
+          role: 'B',
+          avatar: '🚄',
+          gender: 'male'
+        },
+        hanzi: '我想买一张明天上午去上海的高铁票，二等座。',
+        pinyin: 'Wǒ xiǎng mǎi yì zhāng míngtiān shàngwǔ qù Shànghǎi de gāotiě piào, èrděngzuò.',
+        sinoVietnamese: 'Ngã tưởng mãi nhất trương minh thiên thượng ngọ khứ Thượng Hải đích cao thiết phiếu, nhị đẳng tọa.',
+        vietnamese: 'Tôi muốn mua 1 vé tàu cao tốc đi Thượng Hải vào sáng mai, ghế hạng nhì (khoang phổ thông).',
+        words: [
+          { hanzi: '明天上午', pinyin: 'míngtiān shàngwǔ', sinoVietnamese: 'Minh thiên thượng ngọ', meaning: 'Sáng mai', pos: 'Danh từ thời gian' },
+          { hanzi: '高铁', pinyin: 'gāotiě', sinoVietnamese: 'Cao thiết', meaning: 'Tàu cao tốc (Bullet Train)', pos: 'Danh từ' },
+          { hanzi: '二等座', pinyin: 'èrděngzuò', sinoVietnamese: 'Nhị đẳng tọa', meaning: 'Ghế hạng 2 (phổ thông)', pos: 'Danh từ' }
+        ]
+      },
+      {
+        id: 'tr10-3',
+        speaker: {
+          id: 'ticket_seller',
+          name: 'Nhân viên vé',
+          nameCn: '售票员',
+          role: 'A',
+          avatar: '🎫',
+          gender: 'female'
+        },
+        hanzi: '早上九点半的G102次有票，全程四个小时，票价五百五十三元。',
+        pinyin: 'Zǎoshang jiǔ diǎn bàn de G102 cì yǒu piào, quánchéng sì gè xiǎoshí, piàojià wǔbǎi wǔshí sān yuán.',
+        sinoVietnamese: 'Tảo thượng cửu điểm bán đích G102 thứ hữu phiếu, toàn trình tứ cá tiểu thời, phiếu giá ngũ bách ngũ thập tam nguyên.',
+        vietnamese: 'Chuyến tàu G102 lúc 9h30 sáng còn vé, toàn bộ hành trình mất 4 tiếng, giá vé là 553 tệ.',
+        words: [
+          { hanzi: '全程', pinyin: 'quánchéng', sinoVietnamese: 'Toàn trình', meaning: 'Toàn bộ hành trình / tuyến đường', pos: 'Danh từ' },
+          { hanzi: '小时', pinyin: 'xiǎoshí', sinoVietnamese: 'Tiểu thời', meaning: 'Giờ / tiếng đồng hồ', pos: 'Lượng từ/Danh từ' },
+          { hanzi: '票价', pinyin: 'piàojià', sinoVietnamese: 'Phiếu giá', meaning: 'Giá vé', pos: 'Danh từ' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'rent-11',
+    title: 'Đi Thuê Nhà & Căn Hộ Tại Trung Quốc',
+    titleCn: '租房子与签合同',
+    pinyin: 'Zū fángzi yǔ qiān hétong',
+    sinoVietnamese: 'Tô phòng tử dữ thiêm hợp đồng',
+    level: 'HSK 3',
+    category: 'daily',
+    categoryNameVn: 'Đời Sống',
+    icon: '🏠',
+    description: 'Hỏi giá thuê, tiền cọc (áp nhất phó tam 押一付三), tiền điện nước, đồ gia dụng và ký hợp đồng thuê.',
+    durationMinutes: 6,
+    roleplayGoal: {
+      roleA: 'Chủ nhà / Môi giới (房东 - Fángdōng)',
+      roleB: 'Người thuê (租客 - Zūkè)',
+      mission: 'Đóng vai người thuê nhà hỏi tiền thuê mỗi tháng, bao gồm tiền mạng hay không và hẹn xem phòng.'
+    },
+    grammarPoints: [
+      {
+        title: 'Khái niệm "押一付三" (Cọc 1 trả 3)',
+        structure: '押一付三 (Cọc 1 tháng, thanh toán trước 3 tháng tiền nhà)',
+        explanation: 'Quy tắc thanh toán thuê nhà tiêu chuẩn tại hầu hết các thành phố lớn ở Trung Quốc.',
+        examples: [
+          { cn: '房租一个月两千五，押一付三。', pinyin: 'Fángzū yí gè yuè liǎng qiān wǔ, yā yī fù sān.', vn: 'Tiền thuê nhà mỗi tháng 2500 tệ, cọc 1 tháng trả trước 3 tháng.' }
+        ]
+      }
+    ],
+    lines: [
+      {
+        id: 'rn11-1',
+        speaker: {
+          id: 'landlord',
+          name: 'Chủ nhà',
+          nameCn: '房东',
+          role: 'A',
+          avatar: '👨‍💼',
+          gender: 'male'
+        },
+        hanzi: '你好，这套一室一厅带阳台，家具家电齐全，拎包入住。',
+        pinyin: 'Nǐ hǎo, zhè tào yí shì yì tīng dài yángtái, jiājù jiādiàn qíquán, līngbāo rùzhù.',
+        sinoVietnamese: 'Nỉ hảo, giá sáo nhất thất nhất thính đái dương đài, gia cụ gia điện tề toàn, linh bao nhập trú.',
+        vietnamese: 'Chào bạn, căn hộ này 1 phòng ngủ 1 phòng khách có ban công, nội thất đồ điện đầy đủ, chỉ việc xách vali vào ở.',
+        words: [
+          { hanzi: '一室一厅', pinyin: 'yí shì yì tīng', sinoVietnamese: 'Nhất thất nhất thính', meaning: '1 phòng ngủ 1 phòng khách', pos: 'Cụm danh từ' },
+          { hanzi: '阳台', pinyin: 'yángtái', sinoVietnamese: 'Dương đài', meaning: 'Ban công', pos: 'Danh từ' },
+          { hanzi: '拎包入住', pinyin: 'līngbāo rùzhù', sinoVietnamese: 'Linh bao nhập trú', meaning: 'Xách vali vào ở ngay (đủ đồ)', pos: 'Thành ngữ' }
+        ]
+      },
+      {
+        id: 'rn11-2',
+        speaker: {
+          id: 'tenant',
+          name: 'Bạn',
+          nameCn: '租客 (Bạn)',
+          role: 'B',
+          avatar: '🏠',
+          gender: 'male'
+        },
+        hanzi: '房东您好，请问每个月房租多少钱？包含物业费和网费吗？',
+        pinyin: 'Fángdōng nín hǎo, qǐngwèn měi gè yuè fángzū duōshao qián? Bāohán wùyèfèi hé wǎngfèi ma?',
+        sinoVietnamese: 'Phòng đông nâm hảo, thỉnh vấn mỗi cá nguyệt phòng tô đa thiểu tiền? Bao hàm vật nghiệp phí hòa võng phí ma?',
+        vietnamese: 'Chào bác chủ nhà, xin hỏi tiền thuê mỗi tháng là bao nhiêu? Đã bao gồm phí quản lý tòa nhà và tiền mạng chưa ạ?',
+        words: [
+          { hanzi: '房东', pinyin: 'fángdōng', sinoVietnamese: 'Phòng đông', meaning: 'Chủ nhà cho thuê', pos: 'Danh từ' },
+          { hanzi: '房租', pinyin: 'fángzū', sinoVietnamese: 'Phòng tô', meaning: 'Tiền thuê nhà', pos: 'Danh từ' },
+          { hanzi: '物业费', pinyin: 'wùyèfèi', sinoVietnamese: 'Vật nghiệp phí', meaning: 'Phí dịch vụ tòa nhà / chung cư', pos: 'Danh từ' }
+        ]
+      },
+      {
+        id: 'rn11-3',
+        speaker: {
+          id: 'landlord',
+          name: 'Chủ nhà',
+          nameCn: '房东',
+          role: 'A',
+          avatar: '👨‍💼',
+          gender: 'male'
+        },
+        hanzi: '月租三千，包网费和物业。水电费自己交。你今天下午方便来看房吗？',
+        pinyin: 'Yuèzū sān qiān, bāo wǎngfèi hé wùyè. Shuǐdiànfèi zìjǐ jiāo. Nǐ jīntiān xiàwǔ fāngbiàn lái kàn fáng ma?',
+        sinoVietnamese: 'Nguyệt tô tam thiên, bao võng phí hòa vật nghiệp. Thủy điện phí tự kỷ giao. Nỉ kim thiên hạ ngọ phương tiện lai khán phòng ma?',
+        vietnamese: 'Tiền thuê 3000 tệ/tháng, bao gồm tiền mạng và phí quản lý. Tiền điện nước tự đóng. Chiều nay bạn có tiện qua xem phòng không?',
+        words: [
+          { hanzi: '水电费', pinyin: 'shuǐdiànfèi', sinoVietnamese: 'Thủy điện phí', meaning: 'Tiền điện nước', pos: 'Danh từ' },
+          { hanzi: '看房', pinyin: 'kàn fáng', sinoVietnamese: 'Khán phòng', meaning: 'Đi xem nhà / xem phòng', pos: 'Cụm động từ' }
+        ]
+      }
+    ]
   }
 ];
+

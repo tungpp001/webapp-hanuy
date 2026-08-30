@@ -6,6 +6,7 @@ import { DialogueViewer } from './components/Dialogue/DialogueViewer';
 import { RoleplayMode } from './components/Dialogue/RoleplayMode';
 import { ToneMaster } from './components/ToneMaster/ToneMaster';
 import { PracticeHub } from './components/Practice/PracticeHub';
+import { VocabNotebook } from './components/Notebook/VocabNotebook';
 import { AIChatBot } from './components/AIAssistant/AIChatBot';
 import type { Dialogue, UserProgress } from './types/chinese';
 import { getUserProgress } from './utils/storage';
@@ -108,6 +109,9 @@ export function App() {
 
         {/* PRACTICE HUB TAB */}
         {activeTab === 'practice' && <PracticeHub />}
+
+        {/* VOCABULARY NOTEBOOK TAB */}
+        {activeTab === 'notebook' && <VocabNotebook onUpdate={refreshProgress} />}
 
         {/* AI CHAT TAB */}
         {activeTab === 'chat' && <AIChatBot />}

@@ -39,7 +39,7 @@
   transform: rotateY(180deg);
 }
 
-/* Custom animations */
+/* Equalizer sound wave animation */
 @keyframes sound-wave {
   0%, 100% { height: 4px; }
   50% { height: 18px; }
@@ -59,4 +59,79 @@
 
 .sound-wave-bar:nth-child(4) {
   animation-delay: 0.45s;
+}
+
+/* Floating XP Fly Up Animation */
+@keyframes xp-float-up {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.85);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(0px) scale(1.1);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(-24px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.9);
+  }
+}
+
+.animate-xp-fly {
+  animation: xp-float-up 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* Ambient Floating Petals / Particles */
+@keyframes petal-drift {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.7;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(120px, 600px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.petal-particle {
+  position: absolute;
+  pointer-events: none;
+  animation: petal-drift linear infinite;
+}
+
+/* Shimmer Light Reflection Effect on Buttons */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.25),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: 0.75s;
+}
+
+.btn-shimmer:hover::after {
+  left: 150%;
 }

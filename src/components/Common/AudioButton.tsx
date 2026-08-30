@@ -72,14 +72,17 @@ export const AudioButton: React.FC<AudioButtonProps> = ({
         aria-label="Phát âm tiếng Trung"
       >
         {isPlaying ? (
-          <div className="flex items-center gap-0.5 h-4 px-1">
-            <span className="w-1 bg-current rounded-full sound-wave-bar h-2"></span>
-            <span className="w-1 bg-current rounded-full sound-wave-bar h-3"></span>
-            <span className="w-1 bg-current rounded-full sound-wave-bar h-4"></span>
-            <span className="w-1 bg-current rounded-full sound-wave-bar h-2"></span>
-          </div>
+          <>
+            <span className="absolute -inset-1 rounded-full bg-red-500/30 animate-ping opacity-60"></span>
+            <div className="flex items-center gap-0.5 h-4 px-1 relative z-10">
+              <span className="w-1 bg-current rounded-full sound-wave-bar h-2"></span>
+              <span className="w-1 bg-current rounded-full sound-wave-bar h-3"></span>
+              <span className="w-1 bg-current rounded-full sound-wave-bar h-4"></span>
+              <span className="w-1 bg-current rounded-full sound-wave-bar h-2"></span>
+            </div>
+          </>
         ) : (
-          <Volume2 size={iconSizes[size]} />
+          <Volume2 size={iconSizes[size]} className="transition-transform group-hover:scale-110" />
         )}
       </button>
 

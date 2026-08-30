@@ -9,6 +9,8 @@ import { PracticeHub } from './components/Practice/PracticeHub';
 import { HSKExamHub } from './components/HSKExam/HSKExamHub';
 import { VocabNotebook } from './components/Notebook/VocabNotebook';
 import { AIChatBot } from './components/AIAssistant/AIChatBot';
+import { AmbientBackground } from './components/Common/AmbientBackground';
+import { XpGainToastContainer } from './components/Common/XpGainToast';
 import type { Dialogue, UserProgress } from './types/chinese';
 import { getUserProgress } from './utils/storage';
 import { Globe } from 'lucide-react';
@@ -18,6 +20,7 @@ export function App() {
   const [selectedDialogue, setSelectedDialogue] = useState<Dialogue | null>(null);
   const [isRoleplaying, setIsRoleplaying] = useState(false);
   const [progress, setProgress] = useState<UserProgress>(getUserProgress());
+  const [showParticles, setShowParticles] = useState<boolean>(true);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('theme') === 'dark' ||
@@ -64,7 +67,13 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-800 dark:text-stone-100 flex flex-col font-sans transition-colors duration-200">
+    <div className="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-800 dark:text-stone-100 flex flex-col font-sans transition-colors duration-200 relative">
+      {/* Ambient Floating Oriental Elements & Petals */}
+      <AmbientBackground enabled={showParticles} />
+
+      {/* Floating XP Reward Toasts */}
+      <XpGainToastContainer />
+
       {/* Top Navbar */}
       <Header
         activeTab={activeTab}
@@ -76,6 +85,8 @@ export function App() {
         progress={progress}
         isDarkMode={isDarkMode}
         onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
+        showParticles={showParticles}
+        onToggleParticles={() => setShowParticles(!showParticles)}
       />
 
       {/* Main App Container */}

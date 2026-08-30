@@ -21,6 +21,8 @@ interface HeaderProps {
   progress: UserProgress;
   isDarkMode: boolean;
   onToggleDarkMode: () => void;
+  showParticles?: boolean;
+  onToggleParticles?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -29,6 +31,8 @@ export const Header: React.FC<HeaderProps> = ({
   progress,
   isDarkMode,
   onToggleDarkMode,
+  showParticles = true,
+  onToggleParticles,
 }) => {
   const navItems: { id: ActiveTabType; label: string; icon: React.ReactNode }[] = [
     { id: 'dialogues', label: 'Hội Thoại', icon: <BookOpen size={17} /> },
@@ -53,7 +57,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => handleTabClick('dialogues')}
             className="flex items-center gap-2.5 cursor-pointer group select-none shrink-0"
           >
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-red-600 to-amber-500 text-white flex items-center justify-center font-calligraphy text-2xl shadow-md shadow-red-500/20 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-red-600 to-amber-500 text-white flex items-center justify-center font-calligraphy text-2xl shadow-md shadow-red-500/20 group-hover:scale-105 transition-transform animate-float">
               语
             </div>
             <div>
@@ -77,7 +81,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 key={item.id}
                 onClick={() => handleTabClick(item.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
                   activeTab === item.id
                     ? 'bg-red-600 text-white shadow-xs scale-102'
                     : 'text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-stone-700/50'
@@ -89,9 +93,27 @@ export const Header: React.FC<HeaderProps> = ({
             ))}
           </nav>
 
-          {/* Right Side: Score, Streak, Theme Toggle */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          {/* Right Side: Score, Streak, Particle & Theme Toggle */}
+          <div className="flex items-center gap-2 sm:gap-2.5">
             <ScoreBadge progress={progress} />
+
+            {/* Ambient Petals Effect Toggle */}
+            {onToggleParticles && (
+              <button
+                onClick={() => {
+                  playSoundEffect('click');
+                  onToggleParticles();
+                }}
+                className={`p-2.5 rounded-2xl border transition-all ${
+                  showParticles 
+                    ? 'bg-red-50 dark:bg-red-950/60 border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 shadow-xs' 
+                    : 'border-stone-200 dark:border-stone-700 text-stone-400'
+                }`}
+                title={showParticles ? 'Tắt hiệu ứng hoa đào rơi' : 'Bật hiệu ứng hoa đào rơi'}
+              >
+                <span className="text-sm">🌸</span>
+              </button>
+            )}
 
             {/* Dark mode toggle */}
             <button
@@ -102,7 +124,7 @@ export const Header: React.FC<HeaderProps> = ({
               className="p-2.5 rounded-2xl border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
               title={isDarkMode ? 'Chuyển sang chế độ Sáng' : 'Chuyển sang chế độ Tối'}
             >
-              {isDarkMode ? <Sun size={18} className="text-amber-400" /> : <Moon size={18} />}
+              {isDarkMode ? <Sun size={18} className="text-amber-400 animate-spin-slow" /> : <Moon size={18} />}
             </button>
           </div>
         </div>

@@ -95,7 +95,9 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
       >
         {isListening ? (
           <>
-            <span className="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-40"></span>
+            <span className="absolute -inset-2 rounded-full bg-red-500/30 animate-radar"></span>
+            <span className="absolute -inset-4 rounded-full bg-red-500/20 animate-radar" style={{ animationDelay: '0.4s' }}></span>
+            <span className="absolute -inset-6 rounded-full bg-red-500/10 animate-radar" style={{ animationDelay: '0.8s' }}></span>
             <MicOff size={28} className="relative z-10 animate-pulse" />
           </>
         ) : (

@@ -1,4 +1,5 @@
 import type { UserProgress } from '../types/chinese';
+import { triggerXpAnimation } from '../components/Common/XpGainToast';
 
 const STORAGE_KEY = 'hanyuflow_user_progress_v1';
 
@@ -59,6 +60,7 @@ export const addXP = (amount: number): UserProgress => {
   };
 
   saveUserProgress(updated);
+  triggerXpAnimation(amount);
   return updated;
 };
 

@@ -1,0 +1,172 @@
+import type { FlashcardItem } from '../types/chinese';
+
+export const FLASHCARDS: FlashcardItem[] = [
+  {
+    id: 'fc-1',
+    hanzi: '点餐',
+    pinyin: 'diǎncān',
+    sinoVietnamese: 'Điểm xan',
+    meaning: 'Gọi món (tại quán ăn)',
+    hskLevel: 'HSK 1',
+    category: 'Ăn uống',
+    exampleCn: '服务员，我们想点餐。',
+    examplePinyin: 'Fúwùyuán, wǒmen xiǎng diǎncān.',
+    exampleVn: 'Phục vụ ơi, chúng tôi muốn gọi món.'
+  },
+  {
+    id: 'fc-2',
+    hanzi: '买单 / 结账',
+    pinyin: 'mǎidān / jiézhàng',
+    sinoVietnamese: 'Mãi đơn / Kết trướng',
+    meaning: 'Tính tiền, thanh toán',
+    hskLevel: 'HSK 1',
+    category: 'Ăn uống',
+    exampleCn: '请问在哪里买单？',
+    examplePinyin: 'Qǐngwèn zài nǎlǐ mǎidān?',
+    exampleVn: 'Xin hỏi thanh toán ở đâu ạ?'
+  },
+  {
+    id: 'fc-3',
+    hanzi: '多少钱',
+    pinyin: 'duōshao qián',
+    sinoVietnamese: 'Đa thiểu tiền',
+    meaning: 'Bao nhiêu tiền',
+    hskLevel: 'HSK 1',
+    category: 'Mua sắm',
+    exampleCn: '这件外套多少钱？',
+    examplePinyin: 'Zhè jiàn wàitào duōshao qián?',
+    exampleVn: 'Chiếc áo khoác này bao nhiêu tiền?'
+  },
+  {
+    id: 'fc-4',
+    hanzi: '便宜',
+    pinyin: 'piányi',
+    sinoVietnamese: 'Tiện nghi',
+    meaning: 'Rẻ (giá cả)',
+    hskLevel: 'HSK 2',
+    category: 'Mua sắm',
+    exampleCn: '太贵了，便宜一点吧！',
+    examplePinyin: 'Tài guì le, piányi yìdiǎn ba!',
+    exampleVn: 'Đắt quá rồi, bớt chút đi bạn ơi!'
+  },
+  {
+    id: 'fc-5',
+    hanzi: '微信支付',
+    pinyin: 'wēixìn zhīfù',
+    sinoVietnamese: 'Vi tín chi phó',
+    meaning: 'Thanh toán qua WeChat Pay',
+    hskLevel: 'HSK 2',
+    category: 'Mua sắm',
+    exampleCn: '我可以扫你的微信支付吗？',
+    examplePinyin: 'Wǒ kěyǐ sǎo nǐ de wēixìn zhīfù ma?',
+    exampleVn: 'Tôi quét mã WeChat của bạn được không?'
+  },
+  {
+    id: 'fc-6',
+    hanzi: '地铁站',
+    pinyin: 'dìtiězhàn',
+    sinoVietnamese: 'Địa thiết trạm',
+    meaning: 'Ga tàu điện ngầm',
+    hskLevel: 'HSK 2',
+    category: 'Du lịch',
+    exampleCn: '去地铁站要走几分钟？',
+    examplePinyin: 'Qù dìtiězhàn yào zǒu jǐ fēnzhōng?',
+    exampleVn: 'Đi đến ga tàu điện ngầm mất mấy phút?'
+  },
+  {
+    id: 'fc-7',
+    hanzi: '一直走',
+    pinyin: 'yìzhí zǒu',
+    sinoVietnamese: 'Nhất trực tẩu',
+    meaning: 'Đi thẳng một mạch',
+    hskLevel: 'HSK 2',
+    category: 'Du lịch',
+    exampleCn: '你一直往前走就到了。',
+    examplePinyin: 'Nǐ yìzhí wǎng qián zǒu jiù dào le.',
+    exampleVn: 'Bạn cứ đi thẳng về phía trước là tới nơi.'
+  },
+  {
+    id: 'fc-8',
+    hanzi: '预订',
+    pinyin: 'yùdìng',
+    sinoVietnamese: 'Dự đính',
+    meaning: 'Đặt trước (vé, phòng, bàn)',
+    hskLevel: 'HSK 3',
+    category: 'Khách sạn',
+    exampleCn: '我已经在网上预订了房间。',
+    examplePinyin: 'Wǒ yǐjīng zài wǎngshang yùdìng le fángjiān.',
+    exampleVn: 'Tôi đã đặt phòng trước trên mạng rồi.'
+  },
+  {
+    id: 'fc-9',
+    hanzi: '行李托运',
+    pinyin: 'xíngli tuōyùn',
+    sinoVietnamese: 'Hành lý thác vận',
+    meaning: 'Ký gửi hành lý sân bay',
+    hskLevel: 'HSK 3',
+    category: 'Sân bay',
+    exampleCn: '请问一件行李可以托运多少公斤？',
+    examplePinyin: 'Qǐngwèn yí jiàn xíngli kěyǐ tuōyùn duōshao gōngjīn?',
+    exampleVn: 'Xin hỏi một kiện hành lý được ký gửi bao nhiêu kg?'
+  },
+  {
+    id: 'fc-10',
+    hanzi: '自我介绍',
+    pinyin: 'zìwǒ jièshào',
+    sinoVietnamese: 'Tự ngã giới thiệu',
+    meaning: 'Tự giới thiệu bản thân',
+    hskLevel: 'HSK 1',
+    category: 'Giao tiếp',
+    exampleCn: '请大家做一个简短的自我介绍。',
+    examplePinyin: 'Qǐng dàjiā zuò yí gè jiǎnduǎn de zìwǒ jièshào.',
+    exampleVn: 'Xin mời mọi người làm một bài giới thiệu bản thân ngắn gọn.'
+  },
+  {
+    id: 'fc-11',
+    hanzi: '很高兴认识你',
+    pinyin: 'hěn gāoxìng rènshi nǐ',
+    sinoVietnamese: 'Ngận cao hứng nhận thức nỉ',
+    meaning: 'Rất vui được quen biết bạn',
+    hskLevel: 'HSK 1',
+    category: 'Giao tiếp',
+    exampleCn: '李华，很高兴认识你！',
+    examplePinyin: 'Lǐ Huá, hěn gāoxìng rènshi nǐ!',
+    exampleVn: 'Lý Hoa, rất vui được làm quen với bạn!'
+  },
+  {
+    id: 'fc-12',
+    hanzi: '工作经验',
+    pinyin: 'gōngzuò jīngyàn',
+    sinoVietnamese: 'Công tác kinh nghiệm',
+    meaning: 'Kinh nghiệm làm việc',
+    hskLevel: 'HSK 3',
+    category: 'Công việc',
+    exampleCn: '我有三年的外贸工作经验。',
+    examplePinyin: 'Wǒ yǒu sān nián de wàimào gōngzuò jīngyàn.',
+    exampleVn: 'Tôi có 3 năm kinh nghiệm làm việc ngành ngoại thương.'
+  },
+  {
+    id: 'fc-13',
+    hanzi: '感冒发烧',
+    pinyin: 'gǎnmào fāshāo',
+    sinoVietnamese: 'Cảm mạo phát thiêu',
+    meaning: 'Cảm cúm phát sốt',
+    hskLevel: 'HSK 2',
+    category: 'Y tế',
+    exampleCn: '他昨天感冒发烧，今天请假了。',
+    examplePinyin: 'Tā zuótiān gǎnmào fāshāo, jīntiān qǐngjià le.',
+    exampleVn: 'Hôm qua anh ấy bị cảm sốt, hôm nay đã xin nghỉ phép rồi.'
+  },
+  {
+    id: 'fc-14',
+    hanzi: '登机牌',
+    pinyin: 'dēngjīpái',
+    sinoVietnamese: 'Đăng cơ bài',
+    meaning: 'Thẻ lên máy bay (Boarding pass)',
+    hskLevel: 'HSK 3',
+    category: 'Sân bay',
+    exampleCn: '请拿好您的登机牌和护照。',
+    examplePinyin: 'Qǐng ná hǎo nín de dēngjīpái hé hùzhào.',
+    exampleVn: 'Xin cầm chắc thẻ lên tàu bay và hộ chiếu của quý khách.'
+  }
+];

@@ -13,6 +13,7 @@ export interface ShadowingVideo {
   id: string;
   title: string;
   youtubeId: string;
+  videoUrl?: string; // Direct HTML5 video stream URL
   thumbnailUrl: string;
   category: 'vlog' | 'drama' | 'daily' | 'food' | 'interview' | 'animation';
   level: 'HSK 1-2' | 'HSK 3-4' | 'HSK 5+';

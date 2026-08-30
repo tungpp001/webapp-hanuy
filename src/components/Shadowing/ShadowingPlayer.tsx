@@ -1,15 +1,17 @@
 import type React from 'react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { 
   ArrowLeft, 
   RotateCcw, 
   Play, 
   Pause, 
   SkipBack, 
-  SkipForward,
-  Link,
-  Volume2,
-  ExternalLink
+  SkipForward, 
+  Link, 
+  Volume2, 
+  Film,
+  Tv,
+  Repeat
 } from 'lucide-react';
 import type { ShadowingVideo, SubtitleSegment } from '../../types/shadowing';
 import { ShadowingRecorder } from './ShadowingRecorder';
@@ -26,8 +28,10 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
   const [activeSegmentIndex, setActiveSegmentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
+  const [playerMode, setPlayerMode] = useState<'video' | 'youtube'>(video.videoUrl ? 'video' : 'youtube');
   const [customYouTubeUrl, setCustomYouTubeUrl] = useState('');
   const [currentVideoId, setCurrentVideoId] = useState(video.youtubeId);
+  const [isLooping, setIsLooping] = useState(false);
 
   // Subtitle layer toggles
   const [showPinyin, setShowPinyin] = useState(true);
@@ -42,23 +46,35 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
     meaning: string;
   } | null>(null);
 
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const activeSegment: SubtitleSegment = video.subtitles[activeSegmentIndex] || video.subtitles[0];
 
-  // Helper to send postMessage commands to YouTube IFrame API
-  const sendIframeCommand = (command: string, args: any[] = []) => {
-    if (!iframeRef.current || !iframeRef.current.contentWindow) return;
-    try {
-      iframeRef.current.contentWindow.postMessage(
-        JSON.stringify({
-          event: 'command',
-          func: command,
-          args: args,
-        }),
-        '*'
-      );
-    } catch (e) {
-      console.warn('IFrame postMessage error', e);
+  // Set playback rate when changed
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = playbackSpeed;
+    }
+  }, [playbackSpeed]);
+
+  // Sync subtitle highlighting as HTML5 video plays
+  const handleTimeUpdate = () => {
+    if (!videoRef.current) return;
+    const currentTime = videoRef.current.currentTime;
+
+    // Check if active segment should loop
+    if (isLooping && currentTime >= activeSegment.endTime) {
+      videoRef.current.currentTime = activeSegment.startTime;
+      videoRef.current.play();
+      return;
+    }
+
+    // Find current active segment by timestamp
+    const foundIndex = video.subtitles.findIndex(
+      (s) => currentTime >= s.startTime && currentTime <= s.endTime
+    );
+
+    if (foundIndex !== -1 && foundIndex !== activeSegmentIndex) {
+      setActiveSegmentIndex(foundIndex);
     }
   };
 
@@ -66,9 +82,11 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
     if (index < 0 || index >= video.subtitles.length) return;
     setActiveSegmentIndex(index);
     const seg = video.subtitles[index];
-    sendIframeCommand('seekTo', [seg.startTime, true]);
-    sendIframeCommand('playVideo', []);
-    setIsPlaying(true);
+
+    if (videoRef.current) {
+      videoRef.current.currentTime = seg.startTime;
+      videoRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
+    }
     playSoundEffect('click');
   };
 
@@ -90,18 +108,23 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
 
   const togglePlayPause = () => {
     playSoundEffect('click');
-    if (isPlaying) {
-      sendIframeCommand('pauseVideo', []);
-      setIsPlaying(false);
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
+      } else {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      }
     } else {
-      sendIframeCommand('playVideo', []);
-      setIsPlaying(true);
+      setIsPlaying(!isPlaying);
     }
   };
 
   const handleSpeedChange = (speed: number) => {
     setPlaybackSpeed(speed);
-    sendIframeCommand('setPlaybackRate', [speed]);
+    if (videoRef.current) {
+      videoRef.current.playbackRate = speed;
+    }
     playSoundEffect('click');
   };
 
@@ -111,6 +134,7 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
     const extractedId = extractYouTubeId(customYouTubeUrl);
     if (extractedId) {
       setCurrentVideoId(extractedId);
+      setPlayerMode('youtube');
       playSoundEffect('click');
       setCustomYouTubeUrl('');
     }
@@ -139,7 +163,7 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="p-2.5 rounded-2xl border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            className="p-2.5 rounded-2xl border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors cursor-pointer"
             title="Quay lại danh sách video"
           >
             <ArrowLeft size={18} />
@@ -163,7 +187,7 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
         <div className="flex items-center gap-1.5 bg-stone-100 dark:bg-stone-800/80 p-1.5 rounded-2xl border border-stone-200 dark:border-stone-700 text-xs font-bold">
           <button
             onClick={() => setShowPinyin(!showPinyin)}
-            className={`px-3 py-1.5 rounded-xl transition-all ${
+            className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
               showPinyin ? 'bg-red-600 text-white shadow-xs' : 'text-stone-500 hover:text-stone-800'
             }`}
           >
@@ -171,7 +195,7 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
           </button>
           <button
             onClick={() => setShowSinoVietnamese(!showSinoVietnamese)}
-            className={`px-3 py-1.5 rounded-xl transition-all ${
+            className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
               showSinoVietnamese ? 'bg-red-600 text-white shadow-xs' : 'text-stone-500 hover:text-stone-800'
             }`}
           >
@@ -179,7 +203,7 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
           </button>
           <button
             onClick={() => setShowTranslation(!showTranslation)}
-            className={`px-3 py-1.5 rounded-xl transition-all ${
+            className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
               showTranslation ? 'bg-red-600 text-white shadow-xs' : 'text-stone-500 hover:text-stone-800'
             }`}
           >
@@ -188,51 +212,100 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
         </div>
       </div>
 
-      {/* Quick Paste Custom YouTube URL Bar */}
-      <form onSubmit={handleApplyCustomUrl} className="flex items-center gap-2 p-3 bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-xs">
-        <div className="relative flex-1">
-          <Link className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" size={15} />
-          <input
-            type="text"
-            placeholder="Dán link YouTube bất kỳ để phát và luyện Shadowing (vd: https://www.youtube.com/watch?v=...)"
-            value={customYouTubeUrl}
-            onChange={(e) => setCustomYouTubeUrl(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-xs sm:text-sm rounded-xl bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-white placeholder-stone-400 border border-stone-200 dark:border-stone-700 focus:outline-hidden focus:ring-2 focus:ring-red-500"
-          />
+      {/* Mode Switcher & Quick Paste Custom YouTube URL Bar */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3 bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-xs">
+        {/* Source switch pills */}
+        <div className="flex items-center gap-1.5 bg-stone-100 dark:bg-stone-800 p-1 rounded-xl shrink-0">
+          <button
+            onClick={() => setPlayerMode('video')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+              playerMode === 'video'
+                ? 'bg-red-600 text-white shadow-xs'
+                : 'text-stone-600 dark:text-stone-400 hover:text-stone-900'
+            }`}
+          >
+            <Film size={14} />
+            <span>Video Trực Tiếp (HD 100% Chạy)</span>
+          </button>
+          <button
+            onClick={() => setPlayerMode('youtube')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+              playerMode === 'youtube'
+                ? 'bg-red-600 text-white shadow-xs'
+                : 'text-stone-600 dark:text-stone-400 hover:text-stone-900'
+            }`}
+          >
+            <Tv size={14} />
+            <span>YouTube Player</span>
+          </button>
         </div>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-stone-900 hover:bg-stone-800 dark:bg-white dark:hover:bg-stone-100 text-white dark:text-stone-900 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer"
-        >
-          Tải Video
-        </button>
-        <a
-          href={`https://www.youtube.com/watch?v=${currentVideoId}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="p-2 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-500 hover:text-red-600 dark:hover:text-red-400 transition-colors hidden sm:flex items-center gap-1 text-xs font-semibold"
-          title="Mở trên YouTube"
-        >
-          <ExternalLink size={14} />
-          <span>YouTube</span>
-        </a>
-      </form>
 
-      {/* Main Grid: YouTube Video + Sync Subtitles & Shadowing Studio */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column (7 Cols): YouTube Video Embed + Segment Controls */}
-        <div className="lg:col-span-7 space-y-4">
-          {/* YouTube Video Container */}
-          <div className="relative rounded-3xl overflow-hidden bg-black shadow-xl aspect-video border-2 border-stone-800">
-            <iframe
-              ref={iframeRef}
-              key={currentVideoId}
-              src={`https://www.youtube.com/embed/${currentVideoId}?enablejsapi=1&autoplay=0&rel=0&modestbranding=1&playsinline=1`}
-              title={video.title}
-              className="absolute inset-0 w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
+        {/* Input link */}
+        <form onSubmit={handleApplyCustomUrl} className="flex items-center gap-2 flex-1 max-w-md">
+          <div className="relative flex-1">
+            <Link className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" size={14} />
+            <input
+              type="text"
+              placeholder="Dán link YouTube (vd: https://youtube.com/watch?v=...)"
+              value={customYouTubeUrl}
+              onChange={(e) => setCustomYouTubeUrl(e.target.value)}
+              className="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-white placeholder-stone-400 border border-stone-200 dark:border-stone-700 focus:outline-hidden focus:ring-2 focus:ring-red-500"
             />
+          </div>
+          <button
+            type="submit"
+            className="px-3 py-1.5 bg-stone-900 hover:bg-stone-800 dark:bg-white dark:hover:bg-stone-100 text-white dark:text-stone-900 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer"
+          >
+            Tải
+          </button>
+        </form>
+      </div>
+
+      {/* Main Grid: Video Player + Sync Subtitles & Shadowing Studio */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Left Column (7 Cols): Video Player + Segment Controls */}
+        <div className="lg:col-span-7 space-y-4">
+          {/* Player Container */}
+          <div className="relative rounded-3xl overflow-hidden bg-black shadow-xl aspect-video border-2 border-stone-800 flex items-center justify-center">
+            {playerMode === 'video' && video.videoUrl ? (
+              <video
+                ref={videoRef}
+                src={video.videoUrl}
+                poster={video.thumbnailUrl}
+                onTimeUpdate={handleTimeUpdate}
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+                className="w-full h-full object-cover"
+                playsInline
+                controls={false}
+              />
+            ) : (
+              <iframe
+                key={currentVideoId}
+                src={`https://www.youtube.com/embed/${currentVideoId}?autoplay=0&rel=0&modestbranding=1&playsinline=1`}
+                title={video.title}
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            )}
+
+            {/* In-video subtitle overlay */}
+            <div className="absolute bottom-3 inset-x-4 p-2.5 rounded-2xl bg-black/75 backdrop-blur-md text-white text-center pointer-events-none transition-all">
+              {showPinyin && (
+                <div className="text-xs text-amber-300 font-medium">
+                  {activeSegment.pinyin}
+                </div>
+              )}
+              <div className="text-base sm:text-lg font-bold font-chinese leading-tight">
+                {activeSegment.hanzi}
+              </div>
+              {showTranslation && (
+                <div className="text-xs text-stone-200 mt-0.5">
+                  {activeSegment.vietnamese}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Video Playback Controller Bar */}
@@ -243,7 +316,7 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
                 <button
                   key={speed}
                   onClick={() => handleSpeedChange(speed)}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                     playbackSpeed === speed
                       ? 'bg-stone-900 dark:bg-white text-white dark:text-stone-900 shadow-xs'
                       : 'text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-800'
@@ -254,12 +327,12 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
               ))}
             </div>
 
-            {/* Prev, Play/Pause, Replay, Next, TTS Fallback */}
+            {/* Prev, Play/Pause, Replay, Loop, Next, TTS */}
             <div className="flex items-center gap-2">
               <button
                 onClick={handlePrevSegment}
                 disabled={activeSegmentIndex === 0}
-                className="p-2 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-100 disabled:opacity-30 transition-all"
+                className="p-2 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-100 disabled:opacity-30 transition-all cursor-pointer"
                 title="Câu trước"
               >
                 <SkipBack size={16} />
@@ -267,16 +340,31 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
 
               <button
                 onClick={handleReplaySegment}
-                className="px-3.5 py-2 rounded-xl bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-300 font-bold text-xs flex items-center gap-1.5 shadow-xs hover:scale-105 active:scale-95 transition-all"
+                className="px-3.5 py-2 rounded-xl bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-300 font-bold text-xs flex items-center gap-1.5 shadow-xs hover:scale-105 active:scale-95 transition-all cursor-pointer"
                 title="Phát lại câu hiện tại"
               >
                 <RotateCcw size={14} />
-                <span>Lặp câu</span>
+                <span>Phát lại</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  playSoundEffect('click');
+                  setIsLooping(!isLooping);
+                }}
+                className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                  isLooping 
+                    ? 'bg-red-600 text-white border-red-600 shadow-xs' 
+                    : 'border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-100'
+                }`}
+                title={isLooping ? 'Tắt lặp lại câu này' : 'Bật lặp lại câu này liên tục (AB Repeat)'}
+              >
+                <Repeat size={16} />
               </button>
 
               <button
                 onClick={togglePlayPause}
-                className="p-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white shadow-md transition-all active:scale-95"
+                className="p-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white shadow-md transition-all active:scale-95 cursor-pointer"
                 title={isPlaying ? 'Tạm dừng video' : 'Phát video'}
               >
                 {isPlaying ? <Pause size={16} /> : <Play size={16} />}
@@ -284,7 +372,7 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
 
               <button
                 onClick={() => handlePlayTTSFallback(activeSegment.hanzi)}
-                className="p-2 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:text-red-600 hover:bg-red-50 transition-all"
+                className="p-2 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:text-red-600 hover:bg-red-50 transition-all cursor-pointer"
                 title="Phát âm thanh mẫu (TTS tiếng Trung bản xứ)"
               >
                 <Volume2 size={16} />
@@ -293,7 +381,7 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
               <button
                 onClick={handleNextSegment}
                 disabled={activeSegmentIndex === video.subtitles.length - 1}
-                className="p-2 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-100 disabled:opacity-30 transition-all"
+                className="p-2 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-100 disabled:opacity-30 transition-all cursor-pointer"
                 title="Câu tiếp theo"
               >
                 <SkipForward size={16} />

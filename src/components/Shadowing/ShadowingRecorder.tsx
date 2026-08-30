@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
   Mic, 
   MicOff, 
@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import type { SubtitleSegment, ShadowingRecordResult } from '../../types/shadowing';
 import { createSpeechRecognizer, evaluatePronunciation, speakChinese, playSoundEffect } from '../../utils/speech';
+import type { SpeechRecognitionInstance } from '../../utils/speech';
 import { addXP } from '../../utils/storage';
 
 interface ShadowingRecorderProps {
@@ -27,37 +28,64 @@ export const ShadowingRecorder: React.FC<ShadowingRecorderProps> = ({
   const [scoreResult, setScoreResult] = useState<ShadowingRecordResult | null>(null);
   const [supported, setSupported] = useState(true);
 
+  const recognizerRef = useRef<SpeechRecognitionInstance | null>(null);
+  const accumulatedTextRef = useRef('');
+
   // Reset when segment changes
   useEffect(() => {
+    if (recognizerRef.current) {
+      recognizerRef.current.abort();
+      recognizerRef.current = null;
+    }
     setSpokenText('');
     setScoreResult(null);
     setIsRecording(false);
+    accumulatedTextRef.current = '';
   }, [segment.id]);
 
   const handleStartRecord = () => {
     playSoundEffect('click');
     setSpokenText('');
     setScoreResult(null);
+    accumulatedTextRef.current = '';
 
     const recognizer = createSpeechRecognizer(
-      (text: string) => {
+      (text: string, isFinal: boolean) => {
         setSpokenText(text);
-        handleEvaluation(text);
+        accumulatedTextRef.current = text;
+        if (isFinal) {
+          handleEvaluation(text);
+        }
       },
       (error: string) => {
         console.warn('Recognition error:', error);
         setIsRecording(false);
       },
-      () => {
+      (finalText: string) => {
         setIsRecording(false);
+        const textToEvaluate = finalText || accumulatedTextRef.current;
+        if (textToEvaluate) {
+          handleEvaluation(textToEvaluate);
+        }
       }
     );
 
     if (recognizer) {
+      recognizerRef.current = recognizer;
       recognizer.start();
       setIsRecording(true);
     } else {
       setSupported(false);
+    }
+  };
+
+  const handleStopRecord = () => {
+    if (recognizerRef.current) {
+      recognizerRef.current.stop();
+    }
+    setIsRecording(false);
+    if (accumulatedTextRef.current) {
+      handleEvaluation(accumulatedTextRef.current);
     }
   };
 
@@ -92,15 +120,6 @@ export const ShadowingRecorder: React.FC<ShadowingRecorderProps> = ({
     speakChinese(segment.hanzi, 0.9);
   };
 
-  if (!supported) {
-    return (
-      <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-xs text-amber-700 dark:text-amber-300 flex items-center gap-2">
-        <AlertCircle size={16} />
-        <span>Trình duyệt của bạn chưa bật tính năng Micro nhận diện giọng nói (khuyên dùng Chrome/Edge).</span>
-      </div>
-    );
-  }
-
   return (
     <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-md space-y-4">
       <div className="flex items-center justify-between">
@@ -116,11 +135,11 @@ export const ShadowingRecorder: React.FC<ShadowingRecorderProps> = ({
 
         <button
           onClick={handleListenSample}
-          className="px-3 py-1.5 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-red-50 hover:text-red-600 text-xs font-bold transition-all flex items-center gap-1"
-          title="Nghe mẫu câu chuẩn"
+          className="px-3 py-1.5 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-red-50 hover:text-red-600 text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+          title="Nghe phát âm chuẩn"
         >
           <Volume2 size={15} />
-          <span>Nghe mẫu</span>
+          <span>Nghe giọng mẫu</span>
         </button>
       </div>
 
@@ -137,16 +156,23 @@ export const ShadowingRecorder: React.FC<ShadowingRecorderProps> = ({
         </div>
       </div>
 
+      {!supported && (
+        <div className="p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-xs text-amber-700 dark:text-amber-300 flex items-center gap-2">
+          <AlertCircle size={16} className="shrink-0" />
+          <span>Hãy cấp quyền Microphone trên trình duyệt Chrome/Edge để thu âm tiếng Trung trực tiếp.</span>
+        </div>
+      )}
+
       {/* Recording Control Button with Radar Waves */}
       <div className="flex flex-col items-center justify-center pt-1 pb-2">
         <button
-          onClick={isRecording ? () => setIsRecording(false) : handleStartRecord}
+          onClick={isRecording ? handleStopRecord : handleStartRecord}
           className={`relative group rounded-full p-4 sm:p-5 transition-all duration-300 flex items-center justify-center cursor-pointer ${
             isRecording
               ? 'bg-red-600 text-white shadow-xl shadow-red-500/40 scale-110'
               : 'bg-gradient-to-r from-red-600 to-amber-600 text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95'
           }`}
-          title={isRecording ? 'Nhấn để dừng ghi âm' : 'Nhấn để bắt đầu nói nhại (Shadowing)'}
+          title={isRecording ? 'Nhấn để dừng ghi âm và chấm điểm' : 'Nhấn để bắt đầu nói nhại (Shadowing)'}
         >
           {isRecording ? (
             <>
@@ -163,7 +189,7 @@ export const ShadowingRecorder: React.FC<ShadowingRecorderProps> = ({
           {isRecording ? (
             <span className="text-red-600 dark:text-red-400 animate-pulse flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
-              Đang thu âm giọng nói của bạn... Hãy phát âm câu trên!
+              Đang lắng nghe... Nhấn lại vào Micro khi nói xong câu!
             </span>
           ) : (
             <span>Nhấn Micro để Shadowing câu này</span>
@@ -172,9 +198,9 @@ export const ShadowingRecorder: React.FC<ShadowingRecorderProps> = ({
       </div>
 
       {/* Real-time Recognition & Pronunciation Score Card */}
-      {spokenText && !scoreResult && isRecording && (
-        <div className="p-3 rounded-xl bg-stone-100 dark:bg-stone-800 text-center text-xs font-chinese text-stone-700 dark:text-stone-300 animate-fade-in">
-          Đang nhận diện: "{spokenText}"
+      {spokenText && isRecording && (
+        <div className="p-3 rounded-xl bg-stone-100 dark:bg-stone-800 text-center text-xs font-chinese text-stone-700 dark:text-stone-300 animate-fade-in border border-stone-200 dark:border-stone-700">
+          Đang nhận diện: <span className="font-bold text-red-600 dark:text-red-400">"{spokenText}"</span>
         </div>
       )}
 
@@ -204,8 +230,8 @@ export const ShadowingRecorder: React.FC<ShadowingRecorderProps> = ({
 
             <button
               onClick={handleStartRecord}
-              className="p-1.5 rounded-lg text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 transition-colors"
-              title="Thử lại"
+              className="p-1.5 rounded-lg text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 transition-colors cursor-pointer"
+              title="Thu âm lại"
             >
               <RotateCcw size={15} />
             </button>
@@ -220,7 +246,7 @@ export const ShadowingRecorder: React.FC<ShadowingRecorderProps> = ({
               {scoreResult.matchedCharacters.map((item, idx) => (
                 <span
                   key={idx}
-                  className={`px-2 py-1 rounded-lg font-chinese font-bold text-sm border ${
+                  className={`px-2.5 py-1 rounded-lg font-chinese font-bold text-sm border ${
                     item.isCorrect
                       ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-300 text-emerald-700 dark:text-emerald-300'
                       : 'bg-red-50 dark:bg-red-950/60 border-red-300 text-red-700 dark:text-red-300'

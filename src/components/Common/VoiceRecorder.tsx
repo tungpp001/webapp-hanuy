@@ -40,7 +40,10 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
         setErrorMsg(error);
         setInternalListening(false);
       },
-      () => {
+      (finalText) => {
+        if (finalText) {
+          onTranscript(finalText);
+        }
         setInternalListening(false);
       }
     );

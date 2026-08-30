@@ -266,19 +266,34 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
         {/* Left Column (7 Cols): Video Player + Segment Controls */}
         <div className="lg:col-span-7 space-y-4">
           {/* Player Container */}
-          <div className="relative rounded-3xl overflow-hidden bg-black shadow-xl aspect-video border-2 border-stone-800 flex items-center justify-center">
+          <div 
+            onClick={playerMode === 'video' ? togglePlayPause : undefined}
+            className={`relative rounded-3xl overflow-hidden bg-black shadow-xl aspect-video border-2 border-stone-800 flex items-center justify-center ${playerMode === 'video' ? 'cursor-pointer group' : ''}`}
+          >
             {playerMode === 'video' && video.videoUrl ? (
-              <video
-                ref={videoRef}
-                src={video.videoUrl}
-                poster={video.thumbnailUrl}
-                onTimeUpdate={handleTimeUpdate}
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
-                className="w-full h-full object-cover"
-                playsInline
-                controls={false}
-              />
+              <>
+                <video
+                  ref={videoRef}
+                  src={video.videoUrl}
+                  poster={video.thumbnailUrl}
+                  onTimeUpdate={handleTimeUpdate}
+                  onPlay={() => setIsPlaying(true)}
+                  onPause={() => setIsPlaying(false)}
+                  className="w-full h-full object-cover"
+                  playsInline
+                  controls={false}
+                  preload="auto"
+                />
+
+                {/* Big Center Play Icon when paused */}
+                {!isPlaying && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors pointer-events-none">
+                    <div className="w-16 h-16 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-2xl scale-100 group-hover:scale-110 transition-transform">
+                      <Play size={28} className="ml-1 fill-white" />
+                    </div>
+                  </div>
+                )}
+              </>
             ) : (
               <iframe
                 key={currentVideoId}
@@ -291,7 +306,7 @@ export const ShadowingPlayer: React.FC<ShadowingPlayerProps> = ({ video, onBack 
             )}
 
             {/* In-video subtitle overlay */}
-            <div className="absolute bottom-3 inset-x-4 p-2.5 rounded-2xl bg-black/75 backdrop-blur-md text-white text-center pointer-events-none transition-all">
+            <div className="absolute bottom-3 inset-x-4 p-2.5 rounded-2xl bg-black/80 backdrop-blur-md text-white text-center pointer-events-none transition-all">
               {showPinyin && (
                 <div className="text-xs text-amber-300 font-medium">
                   {activeSegment.pinyin}

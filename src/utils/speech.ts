@@ -75,9 +75,9 @@ export interface SpeechRecognitionInstance {
 }
 
 export const createSpeechRecognizer = (
-  onResult: (transcript: string) => void,
+  onResult: (transcript: string, isFinal: boolean) => void,
   onError: (error: string) => void,
-  onEnd: () => void
+  onEnd: (finalTranscript: string) => void
 ): SpeechRecognitionInstance | null => {
   if (!isSpeechRecognitionSupported()) {
     onError('Trình duyệt không hỗ trợ nhận diện giọng nói. Hãy dùng Chrome hoặc Edge.');
@@ -93,18 +93,25 @@ export const createSpeechRecognizer = (
   recognition.continuous = false;
   recognition.maxAlternatives = 1;
 
+  let lastRecognizedText = '';
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   recognition.onresult = (event: any) => {
+    let interimTranscript = '';
     let finalTranscript = '';
+
     for (let i = event.resultIndex; i < event.results.length; ++i) {
       if (event.results[i].isFinal) {
         finalTranscript += event.results[i][0].transcript;
       } else {
-        finalTranscript += event.results[i][0].transcript;
+        interimTranscript += event.results[i][0].transcript;
       }
     }
-    if (finalTranscript) {
-      onResult(finalTranscript);
+
+    const currentText = finalTranscript || interimTranscript;
+    if (currentText) {
+      lastRecognizedText = currentText;
+      onResult(currentText, Boolean(finalTranscript));
     }
   };
 
@@ -112,7 +119,7 @@ export const createSpeechRecognizer = (
   recognition.onerror = (event: any) => {
     let message = 'Lỗi nhận diện giọng nói.';
     if (event.error === 'no-speech') {
-      message = 'Chưa nghe thấy bạn nói. Hãy thử lại gần micro hơn nhé!';
+      message = 'Chưa nghe thấy bạn nói. Hãy thử nói to và rõ hơn nhé!';
     } else if (event.error === 'audio-capture') {
       message = 'Không tìm thấy microphone trên thiết bị của bạn.';
     } else if (event.error === 'not-allowed') {
@@ -122,7 +129,7 @@ export const createSpeechRecognizer = (
   };
 
   recognition.onend = () => {
-    onEnd();
+    onEnd(lastRecognizedText);
   };
 
   return {

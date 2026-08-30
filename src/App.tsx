@@ -6,6 +6,7 @@ import { DialogueViewer } from './components/Dialogue/DialogueViewer';
 import { RoleplayMode } from './components/Dialogue/RoleplayMode';
 import { ToneMaster } from './components/ToneMaster/ToneMaster';
 import { PracticeHub } from './components/Practice/PracticeHub';
+import { HSKExamHub } from './components/HSKExam/HSKExamHub';
 import { VocabNotebook } from './components/Notebook/VocabNotebook';
 import { AIChatBot } from './components/AIAssistant/AIChatBot';
 import type { Dialogue, UserProgress } from './types/chinese';
@@ -109,6 +110,9 @@ export function App() {
 
         {/* PRACTICE HUB TAB */}
         {activeTab === 'practice' && <PracticeHub />}
+
+        {/* HSK MOCK EXAM TAB */}
+        {activeTab === 'hsk' && <HSKExamHub />}
 
         {/* VOCABULARY NOTEBOOK TAB */}
         {activeTab === 'notebook' && <VocabNotebook onUpdate={refreshProgress} />}

@@ -2,11 +2,14 @@ import type React from 'react';
 import { useState } from 'react';
 import { 
   Gamepad2, 
-  ArrowRight
+  ArrowRight,
+  Flame,
+  Sparkles
 } from 'lucide-react';
 import { MemoryMatchGame } from './MemoryMatchGame';
 import { SpeedVocabGame } from './SpeedVocabGame';
 import { SentenceRaceGame } from './SentenceRaceGame';
+import { GunTypingGame } from './GunTypingGame';
 import type { GameMode } from '../../types/game';
 import { playSoundEffect } from '../../utils/speech';
 
@@ -22,6 +25,10 @@ export const GameArena: React.FC = () => {
   const handleBackToDashboard = () => {
     setActiveGame(null);
   };
+
+  if (activeGame === 'gun-typing') {
+    return <GunTypingGame onBack={handleBackToDashboard} />;
+  }
 
   if (activeGame === 'memory') {
     return <MemoryMatchGame onBack={handleBackToDashboard} />;
@@ -48,7 +55,7 @@ export const GameArena: React.FC = () => {
             Vừa Chơi Game Vừa Nhớ Từ & Câu Siêu Tốc
           </h1>
           <p className="text-stone-100 text-xs sm:text-sm leading-relaxed">
-            Chơi các mini-games phản xạ hấp dẫn để khắc sâu mặt chữ Hán, nghĩa ngữ cảnh và cấu trúc ngữ pháp giao tiếp một cách tự nhiên và không nhàm chán!
+            Chơi các mini-games phản xạ hấp dẫn: Bắn súng Laser gõ Pinyin, Lật thẻ Trúc Xanh, Bắn từ rơi nhanh và Đua ghép câu 60 giây!
           </p>
         </div>
         <div className="absolute right-4 bottom-[-20px] select-none pointer-events-none opacity-15 font-calligraphy text-9xl sm:text-[180px] text-white">
@@ -56,7 +63,55 @@ export const GameArena: React.FC = () => {
         </div>
       </div>
 
-      {/* Game Modes Grid */}
+      {/* FEATURED HERO GAME: GUN TYPING ATTACK */}
+      <div
+        onClick={() => handleSelectGame('gun-typing')}
+        className="rounded-3xl bg-gradient-to-r from-slate-900 via-stone-900 to-red-950 border-2 border-red-500/50 shadow-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 cursor-pointer hover:border-red-400 hover:scale-[1.01] transition-all group relative overflow-hidden"
+      >
+        <div className="space-y-3 max-w-xl z-10">
+          <div className="flex items-center gap-2">
+            <span className="px-3 py-1 rounded-full bg-red-600 text-white text-xs font-black uppercase tracking-wider flex items-center gap-1 shadow-md">
+              <Sparkles size={12} />
+              Mới Nhất • Hot Arcade
+            </span>
+            <span className="text-xs font-bold text-amber-300 flex items-center gap-1">
+              <Flame size={14} className="fill-amber-300" />
+              Luyện Gõ Phím Pinyin
+            </span>
+          </div>
+
+          <h2 className="text-2xl sm:text-3xl font-black text-white group-hover:text-red-400 transition-colors">
+            🔫 Chiếc Súng Bắn Chữ (Laser Typing Attack)
+          </h2>
+
+          <p className="text-xs sm:text-sm text-stone-300 leading-relaxed">
+            Từ vựng rơi xuống liên tục từ bầu trời. Gõ các ký tự Pinyin trên bàn phím để súng Laser xoay nòng theo thời gian thực và bắn nổ tung từng chữ Hán!
+          </p>
+
+          <div className="flex items-center gap-4 text-xs font-semibold text-stone-400 pt-1">
+            <span className="text-emerald-400 font-bold">+15 XP / Từ tiêu diệt</span>
+            <span>• Âm thanh Laser & Nổ sống động</span>
+            <span>• Đọc phát âm chuẩn</span>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center gap-3 shrink-0 z-10">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-tr from-red-600 to-amber-500 text-white flex items-center justify-center text-4xl sm:text-5xl shadow-2xl group-hover:scale-110 group-hover:rotate-6 transition-all">
+            🔫
+          </div>
+          <button className="px-6 py-2.5 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-black text-xs sm:text-sm shadow-lg flex items-center gap-1.5 transition-all">
+            <span>Bắn Ngay</span>
+            <ArrowRight size={15} />
+          </button>
+        </div>
+
+        {/* Decorative background laser lines */}
+        <div className="absolute right-0 bottom-0 opacity-10 font-calligraphy text-9xl text-red-500 pointer-events-none select-none">
+          炮
+        </div>
+      </div>
+
+      {/* Other Game Modes Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* GAME 1: MEMORY MATCH */}
         <div

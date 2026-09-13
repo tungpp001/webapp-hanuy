@@ -91,3 +91,8 @@ export const toggleBookmarkWord = (word: string): boolean => {
   saveUserProgress(updated);
   return !exists;
 };
+
+export const isWordBookmarked = (word: string): boolean => {
+  const current = getUserProgress();
+  return current.bookmarkedWords.includes(word);
+};

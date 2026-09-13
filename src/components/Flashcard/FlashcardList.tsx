@@ -102,7 +102,7 @@ export const FlashcardList: React.FC<FlashcardListProps> = ({ cards }) => {
               key={card.id}
               className="p-5 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200/80 dark:border-stone-800 shadow-xs hover:shadow-md transition-all flex flex-col justify-between gap-3 group"
             >
-              {/* Header: Hanzi, Pinyin & Bookmark */}
+              {/* Header: Hanzi, Pinyin, Sino-Vietnamese & Actions */}
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <span className="text-3xl font-black font-chinese text-stone-900 dark:text-white">
@@ -112,9 +112,19 @@ export const FlashcardList: React.FC<FlashcardListProps> = ({ cards }) => {
                     <div className="text-sm font-bold text-red-600 dark:text-red-400">
                       {card.pinyin}
                     </div>
-                    <span className="text-[11px] font-semibold text-stone-400">
-                      {card.category}
-                    </span>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <span className="px-2 py-0.5 rounded-md bg-stone-100 dark:bg-stone-800 text-[10px] font-bold text-stone-600 dark:text-stone-300">
+                        {card.level}
+                      </span>
+                      <span className="text-[11px] font-semibold text-stone-400">
+                        {card.category}
+                      </span>
+                    </div>
+                    {card.sinoVietnamese && (
+                      <div className="text-[11px] text-stone-500 dark:text-stone-400 font-medium">
+                        Hán-Việt: {card.sinoVietnamese}
+                      </div>
+                    )}
                   </div>
                 </div>
 

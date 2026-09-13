@@ -102,6 +102,9 @@ export const FlashcardCard: React.FC<FlashcardCardProps> = ({
             </span>
 
             <div className="flex items-center gap-2">
+              <span className="px-2.5 py-1 rounded-xl bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 font-bold text-xs">
+                {card.level}
+              </span>
               <button
                 onClick={handleBookmarkToggle}
                 className={`p-2 rounded-xl border transition-colors cursor-pointer ${
@@ -138,6 +141,12 @@ export const FlashcardCard: React.FC<FlashcardCardProps> = ({
               </button>
             )}
 
+            {card.sinoVietnamese && (
+              <div className="text-xs font-bold text-stone-500 dark:text-stone-400">
+                Âm Hán-Việt: <span className="text-stone-700 dark:text-stone-200">{card.sinoVietnamese}</span>
+              </div>
+            )}
+
             {/* Audio pronounce button */}
             <div className="pt-2">
               <button
@@ -172,9 +181,14 @@ export const FlashcardCard: React.FC<FlashcardCardProps> = ({
               </span>
             </div>
 
-            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-lg bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">
-              {card.category}
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
+                {card.level}
+              </span>
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-lg bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">
+                {card.category}
+              </span>
+            </div>
           </div>
 
           {/* Center: Meaning & Example Sentence */}

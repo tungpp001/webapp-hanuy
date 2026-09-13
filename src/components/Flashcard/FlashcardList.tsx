@@ -10,6 +10,7 @@ import {
 import type { FlashcardItem } from '../../types/flashcard';
 import { speakChinese, playSoundEffect } from '../../utils/speech';
 import { toggleBookmarkWord, isWordBookmarked } from '../../utils/storage';
+import { getFlashcardIllustration } from '../../utils/flashcardIllustration';
 
 interface FlashcardListProps {
   cards: FlashcardItem[];
@@ -96,22 +97,42 @@ export const FlashcardList: React.FC<FlashcardListProps> = ({ cards }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filteredCards.map((card) => {
           const isBookmarked = bookmarkedMap[card.id];
+          const illustration = getFlashcardIllustration(card);
 
           return (
             <div
               key={card.id}
               className="p-5 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200/80 dark:border-stone-800 shadow-xs hover:shadow-md transition-all flex flex-col justify-between gap-3 group"
             >
-              {/* Header: Hanzi, Pinyin, Sino-Vietnamese & Actions */}
+              {/* Header: Illustration + Hanzi, Pinyin, Sino-Vietnamese & Actions */}
               <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl font-black font-chinese text-stone-900 dark:text-white">
-                    {card.hanzi}
-                  </span>
+                <div className="flex items-center gap-3.5">
+                  {/* Illustration Thumbnail / Avatar */}
+                  <div className="w-14 h-14 rounded-2xl overflow-hidden border border-stone-200 dark:border-stone-700 shadow-xs shrink-0 flex items-center justify-center">
+                    {illustration.imageUrl ? (
+                      <img
+                        src={illustration.imageUrl}
+                        alt={card.meaning}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className={`w-full h-full bg-gradient-to-br ${illustration.bgGradient} flex items-center justify-center text-white text-2xl`}>
+                        {illustration.emoji}
+                      </div>
+                    )}
+                  </div>
+
                   <div>
-                    <div className="text-sm font-bold text-red-600 dark:text-red-400">
-                      {card.pinyin}
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-3xl font-black font-chinese text-stone-900 dark:text-white">
+                        {card.hanzi}
+                      </span>
+                      <span className="text-sm font-bold text-red-600 dark:text-red-400">
+                        {card.pinyin}
+                      </span>
                     </div>
+
                     <div className="flex items-center gap-1.5 mt-0.5">
                       <span className="px-2 py-0.5 rounded-md bg-stone-100 dark:bg-stone-800 text-[10px] font-bold text-stone-600 dark:text-stone-300">
                         {card.level}

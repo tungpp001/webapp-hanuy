@@ -9,6 +9,8 @@ export interface FlashcardItem {
   exampleMeaning?: string;
   category: string;
   level: string;
+  imageUrl?: string;
+  imageAlt?: string;
 }
 
 export type FlashcardMastery = 'unlearned' | 'learning' | 'mastered';

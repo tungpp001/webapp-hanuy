@@ -13,6 +13,7 @@ import {
 import type { FlashcardItem, FlashcardMastery } from '../../types/flashcard';
 import { speakChinese, playSoundEffect } from '../../utils/speech';
 import { toggleBookmarkWord, isWordBookmarked, addXP } from '../../utils/storage';
+import { getFlashcardIllustration } from '../../utils/flashcardIllustration';
 
 interface FlashcardCardProps {
   card: FlashcardItem;
@@ -20,6 +21,7 @@ interface FlashcardCardProps {
   onRate: (cardId: string, mastery: FlashcardMastery) => void;
   showPinyinInitial?: boolean;
   autoPlayAudio?: boolean;
+  showIllustration?: boolean;
 }
 
 export const FlashcardCard: React.FC<FlashcardCardProps> = ({
@@ -27,6 +29,7 @@ export const FlashcardCard: React.FC<FlashcardCardProps> = ({
   onRate,
   showPinyinInitial = true,
   autoPlayAudio = true,
+  showIllustration = true,
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [showPinyin, setShowPinyin] = useState(showPinyinInitial);
@@ -82,23 +85,26 @@ export const FlashcardCard: React.FC<FlashcardCardProps> = ({
     onRate(card.id, status);
   };
 
+  const illustration = getFlashcardIllustration(card);
+
   return (
     <div className="w-full max-w-xl mx-auto perspective-1000 select-none">
       {/* 3D Flip Card Container */}
       <div
         onClick={handleFlip}
-        className={`relative min-h-[380px] sm:min-h-[420px] rounded-3xl transition-transform duration-500 transform-style-3d cursor-pointer shadow-xl ${
+        className={`relative min-h-[440px] sm:min-h-[480px] rounded-3xl transition-transform duration-500 transform-style-3d cursor-pointer shadow-xl ${
           isFlipped ? 'rotate-y-180' : ''
         }`}
       >
         {/* =================================================================== */}
-        {/* FRONT OF THE CARD (MẶT TRƯỚC: CHỮ HÁN & PHIÊN ÂM) */}
+        {/* FRONT OF THE CARD (MẶT TRƯỚC: HÌNH MINH HỌA, CHỮ HÁN & PHIÊN ÂM) */}
         {/* =================================================================== */}
-        <div className="absolute inset-0 backface-hidden rounded-3xl bg-gradient-to-tr from-white via-stone-50 to-red-50/40 dark:from-stone-900 dark:via-stone-900 dark:to-stone-800 border-2 border-stone-200 dark:border-stone-700 p-6 sm:p-8 flex flex-col justify-between text-center overflow-hidden">
+        <div className="absolute inset-0 backface-hidden rounded-3xl bg-gradient-to-tr from-white via-stone-50 to-red-50/30 dark:from-stone-900 dark:via-stone-900 dark:to-stone-800 border-2 border-stone-200 dark:border-stone-700 p-5 sm:p-7 flex flex-col justify-between text-center overflow-hidden">
           {/* Top Row: Category badge & bookmark */}
           <div className="flex items-center justify-between">
-            <span className="px-3 py-1 rounded-xl bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 font-bold text-xs">
-              {card.category}
+            <span className="px-3 py-1 rounded-xl bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 font-bold text-xs flex items-center gap-1">
+              <span>{illustration.emoji}</span>
+              <span>{card.category}</span>
             </span>
 
             <div className="flex items-center gap-2">
@@ -119,14 +125,42 @@ export const FlashcardCard: React.FC<FlashcardCardProps> = ({
             </div>
           </div>
 
-          {/* Center: Hanzi & Pinyin */}
-          <div className="space-y-3 my-auto py-6">
-            <h2 className="text-6xl sm:text-7xl font-black font-chinese text-stone-900 dark:text-white tracking-tight leading-none drop-shadow-xs">
+          {/* Center Content: Illustration + Hanzi + Pinyin */}
+          <div className="space-y-3 my-auto py-2">
+            {/* Visual Illustration Banner */}
+            {showIllustration && (
+              <div className="relative mx-auto max-w-[260px] sm:max-w-[300px] h-32 sm:h-40 rounded-2xl overflow-hidden border border-stone-200/80 dark:border-stone-700 shadow-md group">
+                {illustration.imageUrl ? (
+                  <img
+                    src={illustration.imageUrl}
+                    alt={card.meaning}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className={`w-full h-full bg-gradient-to-br ${illustration.bgGradient} flex flex-col items-center justify-center text-white relative p-4`}>
+                    <span className="text-4xl sm:text-5xl mb-1 drop-shadow-md animate-bounce-subtle">
+                      {illustration.emoji}
+                    </span>
+                    <span className="text-xs font-bold uppercase tracking-wider bg-black/20 px-2.5 py-0.5 rounded-full backdrop-blur-xs">
+                      {card.category}
+                    </span>
+                    <span className="absolute bottom-[-10px] right-2 text-7xl opacity-15 font-calligraphy select-none pointer-events-none">
+                      {card.hanzi}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Hanzi */}
+            <h2 className="text-5xl sm:text-6xl font-black font-chinese text-stone-900 dark:text-white tracking-tight leading-tight drop-shadow-xs">
               {card.hanzi}
             </h2>
 
+            {/* Pinyin */}
             {showPinyin ? (
-              <div className="text-xl sm:text-2xl font-bold text-red-600 dark:text-red-400 font-sans">
+              <div className="text-lg sm:text-xl font-bold text-red-600 dark:text-red-400 font-sans">
                 {card.pinyin}
               </div>
             ) : (
@@ -148,13 +182,13 @@ export const FlashcardCard: React.FC<FlashcardCardProps> = ({
             )}
 
             {/* Audio pronounce button */}
-            <div className="pt-2">
+            <div className="pt-1">
               <button
                 onClick={handleSpeakHanzi}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-red-50 hover:bg-red-100 dark:bg-red-950/60 dark:hover:bg-red-900/60 text-red-600 dark:text-red-300 font-bold text-xs transition-all shadow-xs active:scale-95 cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl bg-red-50 hover:bg-red-100 dark:bg-red-950/60 dark:hover:bg-red-900/60 text-red-600 dark:text-red-300 font-bold text-xs transition-all shadow-xs active:scale-95 cursor-pointer"
               >
-                <Volume2 size={16} />
-                <span>Phát âm mẫu (zh-CN)</span>
+                <Volume2 size={15} />
+                <span>Phát âm (zh-CN)</span>
               </button>
             </div>
           </div>
@@ -162,16 +196,16 @@ export const FlashcardCard: React.FC<FlashcardCardProps> = ({
           {/* Bottom Flip Hint */}
           <div className="flex items-center justify-center gap-1.5 text-xs text-stone-400 font-medium pt-2 border-t border-stone-200/60 dark:border-stone-800">
             <RotateCw size={13} className="text-red-500 animate-spin-slow" />
-            <span>Nhấp vào thẻ hoặc bấm phím Space để xem nghĩa & câu ví dụ</span>
+            <span>Nhấp vào thẻ để xem nghĩa & câu ví dụ</span>
           </div>
         </div>
 
         {/* =================================================================== */}
         {/* BACK OF THE CARD (MẶT SAU: NGHĨA & CÂU VÍ DỤ THỰC TẾ) */}
         {/* =================================================================== */}
-        <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-3xl bg-gradient-to-tr from-white via-stone-50 to-amber-50/40 dark:from-stone-900 dark:via-stone-900 dark:to-stone-800 border-2 border-amber-400/70 dark:border-amber-600/70 p-6 sm:p-8 flex flex-col justify-between text-left overflow-y-auto">
+        <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-3xl bg-gradient-to-tr from-white via-stone-50 to-amber-50/40 dark:from-stone-900 dark:via-stone-900 dark:to-stone-800 border-2 border-amber-400/70 dark:border-amber-600/70 p-5 sm:p-7 flex flex-col justify-between text-left overflow-y-auto">
           {/* Top Row: Word summary */}
-          <div className="flex items-center justify-between border-b border-stone-200/80 dark:border-stone-800 pb-3">
+          <div className="flex items-center justify-between border-b border-stone-200/80 dark:border-stone-800 pb-2.5">
             <div className="flex items-center gap-2">
               <span className="text-2xl font-black font-chinese text-red-600 dark:text-red-400">
                 {card.hanzi}
@@ -185,27 +219,38 @@ export const FlashcardCard: React.FC<FlashcardCardProps> = ({
               <span className="text-xs font-semibold px-2 py-0.5 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
                 {card.level}
               </span>
-              <span className="text-xs font-semibold px-2 py-0.5 rounded-lg bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">
-                {card.category}
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-lg bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 flex items-center gap-1">
+                <span>{illustration.emoji}</span>
+                <span>{card.category}</span>
               </span>
             </div>
           </div>
 
           {/* Center: Meaning & Example Sentence */}
-          <div className="space-y-4 my-auto py-3">
-            {/* Vietnamese Meaning */}
-            <div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-0.5">
-                Nghĩa tiếng Việt:
-              </span>
-              <div className="text-xl sm:text-2xl font-black text-stone-900 dark:text-white">
-                {card.meaning}
+          <div className="space-y-3 my-auto py-2">
+            {/* Vietnamese Meaning & Illustration Thumbnail */}
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-0.5">
+                  Nghĩa tiếng Việt:
+                </span>
+                <div className="text-xl sm:text-2xl font-black text-stone-900 dark:text-white">
+                  {card.meaning}
+                </div>
               </div>
+
+              {illustration.imageUrl && (
+                <img
+                  src={illustration.imageUrl}
+                  alt={card.meaning}
+                  className="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl object-cover border border-amber-300/60 dark:border-amber-700/60 shadow-xs shrink-0"
+                />
+              )}
             </div>
 
             {/* Example Sentence Box */}
             {card.exampleHanzi && (
-              <div className="p-4 rounded-2xl bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900 space-y-1.5 relative group">
+              <div className="p-3.5 rounded-2xl bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900 space-y-1.5 relative group">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-400 flex items-center gap-1">
                     <BookOpen size={13} />

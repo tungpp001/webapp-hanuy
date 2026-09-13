@@ -14,7 +14,8 @@ import {
   Sparkles,
   CheckCircle,
   RotateCcw,
-  GraduationCap
+  GraduationCap,
+  Image as ImageIcon
 } from 'lucide-react';
 import { HSK_LEVELS, ALL_FLASHCARDS } from '../../data/flashcards';
 import type { FlashcardMastery, FlashcardProgress } from '../../types/flashcard';
@@ -32,6 +33,7 @@ export const FlashcardHub: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [autoPlayAudio, setAutoPlayAudio] = useState(true);
   const [showPinyinInitial, setShowPinyinInitial] = useState(true);
+  const [showIllustration, setShowIllustration] = useState(true);
 
   // LocalStorage Progress Tracker
   const [progress, setProgress] = useState<FlashcardProgress>(() => {
@@ -374,6 +376,18 @@ export const FlashcardHub: React.FC = () => {
               </button>
 
               <button
+                onClick={() => setShowIllustration(!showIllustration)}
+                className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                  showIllustration
+                    ? 'bg-red-50 text-red-600 border-red-200 dark:bg-red-950/60 dark:border-red-900'
+                    : 'border-stone-200 dark:border-stone-700 text-stone-400'
+                }`}
+                title={showIllustration ? 'Hình minh họa: Đang bật' : 'Hình minh họa: Đang tắt'}
+              >
+                <ImageIcon size={15} />
+              </button>
+
+              <button
                 onClick={handleShuffle}
                 className="px-3 py-1.5 rounded-xl border border-stone-200 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all flex items-center gap-1 text-xs font-bold cursor-pointer"
                 title="Đổi thẻ tiếp theo"
@@ -392,6 +406,7 @@ export const FlashcardHub: React.FC = () => {
               onRate={handleRate}
               showPinyinInitial={showPinyinInitial}
               autoPlayAudio={autoPlayAudio}
+              showIllustration={showIllustration}
             />
           ) : (
             <div className="p-10 text-center text-stone-400">

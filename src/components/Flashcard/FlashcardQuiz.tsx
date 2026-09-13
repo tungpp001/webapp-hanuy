@@ -12,6 +12,7 @@ import {
 import type { FlashcardItem } from '../../types/flashcard';
 import { speakChinese, playSoundEffect } from '../../utils/speech';
 import { addXP } from '../../utils/storage';
+import { getFlashcardIllustration } from '../../utils/flashcardIllustration';
 import confetti from 'canvas-confetti';
 
 interface FlashcardQuizProps {
@@ -100,6 +101,7 @@ export const FlashcardQuiz: React.FC<FlashcardQuizProps> = ({ cards }) => {
     }
   };
 
+  const illustration = currentCard ? getFlashcardIllustration(currentCard) : null;
   const isQuizFinished = currentIndex >= quizPool.length - 1 && isAnswered;
 
   return (
@@ -126,9 +128,15 @@ export const FlashcardQuiz: React.FC<FlashcardQuizProps> = ({ cards }) => {
 
       {/* Target Hanzi Question Card */}
       <div className="p-8 rounded-3xl bg-gradient-to-tr from-stone-900 to-stone-800 text-white text-center shadow-xl space-y-3 relative overflow-hidden">
-        <span className="px-3 py-1 rounded-full bg-white/10 text-amber-300 font-bold text-xs uppercase tracking-wider">
-          Chọn nghĩa đúng của từ:
-        </span>
+        <div className="flex items-center justify-center gap-2">
+          <span className="px-3 py-1 rounded-full bg-white/10 text-amber-300 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5">
+            {illustration && <span>{illustration.emoji}</span>}
+            <span>Chọn nghĩa đúng của từ:</span>
+          </span>
+          <span className="px-2 py-0.5 rounded-full bg-white/10 text-[10px] font-bold text-stone-300">
+            {currentCard.level}
+          </span>
+        </div>
 
         <h2 className="text-5xl sm:text-6xl font-black font-chinese tracking-tight my-2">
           {currentCard.hanzi}
@@ -191,11 +199,38 @@ export const FlashcardQuiz: React.FC<FlashcardQuizProps> = ({ cards }) => {
       {/* Answer Explanation & Next Button */}
       {isAnswered && (
         <div className="p-5 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-md space-y-3 animate-fade-in">
+          {/* Explanation Header with Illustration */}
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-black font-chinese text-stone-900 dark:text-white">
+                {currentCard.hanzi}
+              </span>
+              <span className="text-sm font-bold text-red-600 dark:text-red-400">
+                [{currentCard.pinyin}]
+              </span>
+              {currentCard.sinoVietnamese && (
+                <span className="text-xs text-stone-400">({currentCard.sinoVietnamese})</span>
+              )}
+            </div>
+
+            {illustration?.imageUrl && (
+              <img
+                src={illustration.imageUrl}
+                alt={currentCard.meaning}
+                className="w-12 h-12 rounded-xl object-cover border border-stone-200 dark:border-stone-700 shadow-xs shrink-0"
+              />
+            )}
+          </div>
+
+          <div className="text-sm font-bold text-stone-800 dark:text-stone-200">
+            Nghĩa đúng: <span className="text-emerald-600 dark:text-emerald-400 font-black">{currentCard.meaning}</span>
+          </div>
+
           {currentCard.exampleHanzi && (
             <div className="p-3.5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-900 text-xs space-y-1">
               <span className="font-bold text-amber-800 dark:text-amber-300 flex items-center gap-1">
                 <BookOpen size={13} />
-                <span>Ví dụ:</span>
+                <span>Ví dụ thực tế:</span>
               </span>
               <div className="font-chinese font-bold text-sm text-stone-800 dark:text-stone-200">
                 {currentCard.exampleHanzi}

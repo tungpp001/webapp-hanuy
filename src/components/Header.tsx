@@ -127,30 +127,12 @@ export const Header: React.FC<HeaderProps> = ({
                 playSoundEffect('click');
                 onToggleDarkMode();
               }}
-              className="p-2.5 rounded-2xl border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+              className="p-2.5 rounded-2xl border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors cursor-pointer"
               title={isDarkMode ? 'Chuyển sang chế độ Sáng' : 'Chuyển sang chế độ Tối'}
             >
               {isDarkMode ? <Sun size={18} className="text-amber-400 animate-spin-slow" /> : <Moon size={18} />}
             </button>
           </div>
-        </div>
-
-        {/* Mobile Navigation Tabs (Bottom or sub-bar) */}
-        <div className="flex md:hidden items-center justify-around py-2 border-t border-stone-100 dark:border-stone-800">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => handleTabClick(item.id)}
-              className={`flex flex-col items-center gap-1 py-1 px-2.5 rounded-xl text-[11px] font-bold transition-colors ${
-                activeTab === item.id
-                  ? 'text-red-600 dark:text-red-400'
-                  : 'text-stone-400 hover:text-stone-600'
-              }`}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </button>
-          ))}
         </div>
       </div>
     </header>

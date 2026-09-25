@@ -14,6 +14,7 @@ import type { FlashcardItem, FlashcardMastery } from '../../types/flashcard';
 import { speakChinese, playSoundEffect } from '../../utils/speech';
 import { toggleBookmarkWord, isWordBookmarked, addXP } from '../../utils/storage';
 import { getFlashcardIllustration } from '../../utils/flashcardIllustration';
+import { updateCardSRS } from '../../utils/srs';
 
 interface FlashcardCardProps {
   card: FlashcardItem;
@@ -22,6 +23,7 @@ interface FlashcardCardProps {
   showPinyinInitial?: boolean;
   autoPlayAudio?: boolean;
   showIllustration?: boolean;
+  onOpenEtymology?: (char: string) => void;
 }
 
 export const FlashcardCard: React.FC<FlashcardCardProps> = ({
@@ -30,6 +32,7 @@ export const FlashcardCard: React.FC<FlashcardCardProps> = ({
   showPinyinInitial = true,
   autoPlayAudio = true,
   showIllustration = true,
+  onOpenEtymology,
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [showPinyin, setShowPinyin] = useState(showPinyinInitial);
@@ -74,15 +77,26 @@ export const FlashcardCard: React.FC<FlashcardCardProps> = ({
   const handleRating = (status: FlashcardMastery, e: React.MouseEvent) => {
     e.stopPropagation();
     if (status === 'mastered') {
+      updateCardSRS(card.id, 'good');
       playSoundEffect('correct');
       addXP(10);
     } else if (status === 'learning') {
+      updateCardSRS(card.id, 'hard');
       playSoundEffect('click');
       addXP(5);
     } else {
+      updateCardSRS(card.id, 'again');
       playSoundEffect('incorrect');
     }
     onRate(card.id, status);
+  };
+
+  const handleOpenEtymologyClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    playSoundEffect('click');
+    if (onOpenEtymology) {
+      onOpenEtymology(card.hanzi[0] || card.hanzi);
+    }
   };
 
   const illustration = getFlashcardIllustration(card);
@@ -92,7 +106,7 @@ export const FlashcardCard: React.FC<FlashcardCardProps> = ({
       {/* 3D Flip Card Container */}
       <div
         onClick={handleFlip}
-        className={`relative min-h-[440px] sm:min-h-[480px] rounded-3xl transition-transform duration-500 transform-style-3d cursor-pointer shadow-xl ${
+        className={`relative min-h-[450px] sm:min-h-[490px] rounded-3xl transition-transform duration-500 transform-style-3d cursor-pointer shadow-xl ${
           isFlipped ? 'rotate-y-180' : ''
         }`}
       >
@@ -108,6 +122,16 @@ export const FlashcardCard: React.FC<FlashcardCardProps> = ({
             </span>
 
             <div className="flex items-center gap-2">
+              {onOpenEtymology && (
+                <button
+                  onClick={handleOpenEtymologyClick}
+                  className="px-2.5 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 text-[11px] font-bold flex items-center gap-1 hover:scale-105 transition-transform cursor-pointer"
+                  title="Xem phân tích bộ thủ và chiết tự"
+                >
+                  <Sparkles size={12} />
+                  <span>Chiết tự</span>
+                </button>
+              )}
               <span className="px-2.5 py-1 rounded-xl bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 font-bold text-xs">
                 {card.level}
               </span>
@@ -154,7 +178,11 @@ export const FlashcardCard: React.FC<FlashcardCardProps> = ({
             )}
 
             {/* Hanzi */}
-            <h2 className="text-5xl sm:text-6xl font-black font-chinese text-stone-900 dark:text-white tracking-tight leading-tight drop-shadow-xs">
+            <h2 
+              onClick={handleOpenEtymologyClick}
+              className="text-5xl sm:text-6xl font-black font-chinese text-stone-900 dark:text-white tracking-tight leading-tight drop-shadow-xs hover:text-red-600 transition-colors"
+              title="Nhấn để xem chiết tự & bộ thủ"
+            >
               {card.hanzi}
             </h2>
 

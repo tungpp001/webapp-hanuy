@@ -12,6 +12,7 @@ import { PracticeHub } from './components/Practice/PracticeHub';
 import { HSKExamHub } from './components/HSKExam/HSKExamHub';
 import { VocabNotebook } from './components/Notebook/VocabNotebook';
 import { AIChatBot } from './components/AIAssistant/AIChatBot';
+import { MobileNav } from './components/Common/MobileNav';
 import { AmbientBackground } from './components/Common/AmbientBackground';
 import { XpGainToastContainer } from './components/Common/XpGainToast';
 import type { Dialogue, UserProgress } from './types/chinese';
@@ -93,7 +94,7 @@ export function App() {
       />
 
       {/* Main App Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-24 md:pb-6">
         {/* DIALOGUES TAB */}
         {activeTab === 'dialogues' && (
           <>
@@ -144,8 +145,22 @@ export function App() {
         {activeTab === 'chat' && <AIChatBot />}
       </main>
 
+      {/* Mobile Fixed Bottom Navigation */}
+      <MobileNav
+        activeTab={activeTab}
+        onSelectTab={(tab) => {
+          setActiveTab(tab);
+          setSelectedDialogue(null);
+          setIsRoleplaying(false);
+        }}
+        isDarkMode={isDarkMode}
+        onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
+        showParticles={showParticles}
+        onToggleParticles={() => setShowParticles(!showParticles)}
+      />
+
       {/* Footer */}
-      <footer className="border-t border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/60 backdrop-blur-xs py-8 mt-12">
+      <footer className="border-t border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/60 backdrop-blur-xs py-8 mt-12 hidden md:block">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-500 dark:text-stone-400">
           <div className="flex items-center gap-2">
             <span className="font-bold text-stone-800 dark:text-stone-200">HanYuFlow 汉语流</span>

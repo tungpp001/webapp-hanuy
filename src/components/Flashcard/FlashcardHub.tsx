@@ -22,7 +22,9 @@ import type { FlashcardMastery, FlashcardProgress } from '../../types/flashcard'
 import { FlashcardCard } from './FlashcardCard';
 import { FlashcardQuiz } from './FlashcardQuiz';
 import { FlashcardList } from './FlashcardList';
+import { CharacterEtymologyModal } from '../Common/CharacterEtymologyModal';
 import { playSoundEffect } from '../../utils/speech';
+import { getSRSStats, getDueSRSFlashcards } from '../../utils/srs';
 
 type FlashcardViewMode = 'deck' | 'quiz' | 'list';
 
@@ -34,6 +36,8 @@ export const FlashcardHub: React.FC = () => {
   const [autoPlayAudio, setAutoPlayAudio] = useState(true);
   const [showPinyinInitial, setShowPinyinInitial] = useState(true);
   const [showIllustration, setShowIllustration] = useState(true);
+  const [isDueOnlyMode, setIsDueOnlyMode] = useState(false);
+  const [selectedEtymologyChar, setSelectedEtymologyChar] = useState<string | null>(null);
 
   // LocalStorage Progress Tracker
   const [progress, setProgress] = useState<FlashcardProgress>(() => {
@@ -73,6 +77,11 @@ export const FlashcardHub: React.FC = () => {
     return ['all', ...cats];
   }, [baseCards]);
 
+  // SRS Statistics
+  const srsStats = useMemo(() => {
+    return getSRSStats(baseCards);
+  }, [baseCards, progress]);
+
   // Reset category filter if not present in new level
   useEffect(() => {
     if (selectedCategory !== 'all' && !availableCategories.includes(selectedCategory)) {
@@ -82,14 +91,21 @@ export const FlashcardHub: React.FC = () => {
 
   // Filtered cards for active display
   const activeCards = useMemo(() => {
-    if (selectedCategory === 'all') return baseCards;
-    return baseCards.filter((c) => c.category === selectedCategory);
-  }, [baseCards, selectedCategory]);
+    let list = baseCards;
+    if (isDueOnlyMode) {
+      const dueList = getDueSRSFlashcards(baseCards);
+      list = dueList.length > 0 ? dueList : baseCards;
+    }
+    if (selectedCategory !== 'all') {
+      list = list.filter((c) => c.category === selectedCategory);
+    }
+    return list;
+  }, [baseCards, selectedCategory, isDueOnlyMode, progress]);
 
   // Reset current card index when level or category changes
   useEffect(() => {
     setCurrentIndex(0);
-  }, [selectedLevelId, selectedCategory]);
+  }, [selectedLevelId, selectedCategory, isDueOnlyMode]);
 
   const handleShuffle = () => {
     playSoundEffect('click');
@@ -169,12 +185,17 @@ export const FlashcardHub: React.FC = () => {
             <span className="px-2.5 py-0.5 rounded-full bg-black/20 backdrop-blur-sm text-[11px] font-bold">
               {currentLevelInfo.badge}
             </span>
+            {srsStats.dueTodayCount > 0 && (
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-stone-900 text-[11px] font-extrabold animate-pulse">
+                ⏰ {srsStats.dueTodayCount} từ cần ôn SRS hôm nay
+              </span>
+            )}
           </div>
           <h1 className="text-2xl sm:text-4xl font-black tracking-tight">
             Ôn Luyện Flashcard {currentLevelInfo.name}
           </h1>
           <p className="text-stone-100 text-xs sm:text-sm leading-relaxed">
-            {currentLevelInfo.description}. Luyện tập ghi nhớ mặt chữ Hán, Pinyin, Âm Hán-Việt, nghĩa tiếng Việt, nghe phát âm chuẩn và các câu ví dụ thực tế!
+            {currentLevelInfo.description}. Thuật toán lặp lại ngắt quãng SM-2 (SRS), chiết tự bộ thủ, nghe phát âm chuẩn và câu ví dụ thực tế!
           </p>
         </div>
         <div className="absolute right-4 bottom-[-20px] select-none pointer-events-none opacity-15 font-calligraphy text-9xl sm:text-[180px] text-white">
@@ -193,6 +214,7 @@ export const FlashcardHub: React.FC = () => {
                 onClick={() => {
                   playSoundEffect('click');
                   setSelectedLevelId(lvl.id);
+                  setIsDueOnlyMode(false);
                 }}
                 className={`flex-1 min-w-[110px] sm:min-w-[130px] px-3 py-2.5 rounded-2xl flex flex-col items-center justify-center gap-1 transition-all cursor-pointer text-center ${
                   isSelected
@@ -219,7 +241,7 @@ export const FlashcardHub: React.FC = () => {
         </div>
       </div>
 
-      {/* Progress & Mastery Overview Bar */}
+      {/* Progress & Mastery & SRS Overview Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div className="p-4 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-xs">
           <span className="text-[11px] font-bold uppercase text-stone-400 block mb-1">
@@ -241,10 +263,36 @@ export const FlashcardHub: React.FC = () => {
           </div>
         </div>
 
+        <button
+          onClick={() => {
+            playSoundEffect('click');
+            setIsDueOnlyMode(!isDueOnlyMode);
+          }}
+          className={`p-4 rounded-2xl border text-left transition-all cursor-pointer ${
+            isDueOnlyMode
+              ? 'bg-amber-50 dark:bg-amber-950/60 border-amber-500 ring-2 ring-amber-500/20 shadow-md'
+              : 'bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-800 hover:border-amber-400'
+          }`}
+        >
+          <span className="text-[11px] font-bold uppercase text-amber-600 dark:text-amber-400 block mb-1 flex items-center justify-between">
+            <span className="flex items-center gap-1">
+              <Sparkles size={13} />
+              Cần Ôn SRS Hôm Nay
+            </span>
+            {isDueOnlyMode && <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-amber-500 text-white">Đang lọc</span>}
+          </span>
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-2xl font-black text-stone-800 dark:text-stone-200">
+              {srsStats.dueTodayCount}
+            </span>
+            <span className="text-xs text-stone-400 font-semibold">từ</span>
+          </div>
+        </button>
+
         <div className="p-4 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-xs">
           <span className="text-[11px] font-bold uppercase text-emerald-600 dark:text-emerald-400 block mb-1 flex items-center gap-1">
             <CheckCircle size={13} />
-            Đã Thuộc
+            Đã Thuộc (Mastered)
           </span>
           <span className="text-2xl font-black text-stone-800 dark:text-stone-200">
             {masteredCount} từ
@@ -252,22 +300,12 @@ export const FlashcardHub: React.FC = () => {
         </div>
 
         <div className="p-4 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-xs">
-          <span className="text-[11px] font-bold uppercase text-amber-600 dark:text-amber-400 block mb-1 flex items-center gap-1">
-            <Sparkles size={13} />
-            Đang Học
-          </span>
-          <span className="text-2xl font-black text-stone-800 dark:text-stone-200">
-            {learningCount} từ
-          </span>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-xs">
           <span className="text-[11px] font-bold uppercase text-red-600 dark:text-red-400 block mb-1 flex items-center gap-1">
             <RotateCcw size={13} />
-            Chưa Học
+            Chưa Học / Đang Học
           </span>
           <span className="text-2xl font-black text-stone-800 dark:text-stone-200">
-            {unlearnedCount} từ
+            {unlearnedCount + learningCount} từ
           </span>
         </div>
       </div>
@@ -407,6 +445,7 @@ export const FlashcardHub: React.FC = () => {
               showPinyinInitial={showPinyinInitial}
               autoPlayAudio={autoPlayAudio}
               showIllustration={showIllustration}
+              onOpenEtymology={(char) => setSelectedEtymologyChar(char)}
             />
           ) : (
             <div className="p-10 text-center text-stone-400">
@@ -445,7 +484,20 @@ export const FlashcardHub: React.FC = () => {
       {viewMode === 'quiz' && <FlashcardQuiz cards={activeCards.length >= 4 ? activeCards : ALL_FLASHCARDS} />}
 
       {/* VIEW 3: DIRECTORY LIST MODE */}
-      {viewMode === 'list' && <FlashcardList cards={activeCards} />}
+      {viewMode === 'list' && (
+        <FlashcardList
+          cards={activeCards}
+          onOpenEtymology={(char) => setSelectedEtymologyChar(char)}
+        />
+      )}
+
+      {/* Character Etymology & Radical Breakdown Modal */}
+      {selectedEtymologyChar && (
+        <CharacterEtymologyModal
+          char={selectedEtymologyChar}
+          onClose={() => setSelectedEtymologyChar(null)}
+        />
+      )}
     </div>
   );
 };

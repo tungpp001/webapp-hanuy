@@ -5,7 +5,8 @@ import {
   Volume2, 
   Bookmark, 
   BookmarkCheck, 
-  BookOpen
+  BookOpen,
+  Sparkles
 } from 'lucide-react';
 import type { FlashcardItem } from '../../types/flashcard';
 import { speakChinese, playSoundEffect } from '../../utils/speech';
@@ -14,9 +15,10 @@ import { getFlashcardIllustration } from '../../utils/flashcardIllustration';
 
 interface FlashcardListProps {
   cards: FlashcardItem[];
+  onOpenEtymology?: (char: string) => void;
 }
 
-export const FlashcardList: React.FC<FlashcardListProps> = ({ cards }) => {
+export const FlashcardList: React.FC<FlashcardListProps> = ({ cards, onOpenEtymology }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [bookmarkedMap, setBookmarkedMap] = useState<Record<string, boolean>>(() => {
@@ -150,6 +152,19 @@ export const FlashcardList: React.FC<FlashcardListProps> = ({ cards }) => {
                 </div>
 
                 <div className="flex items-center gap-1">
+                  {onOpenEtymology && (
+                    <button
+                      onClick={() => {
+                        playSoundEffect('click');
+                        onOpenEtymology(card.hanzi[0] || card.hanzi);
+                      }}
+                      className="p-2 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/40 transition-colors cursor-pointer"
+                      title="Xem chiết tự & bộ thủ"
+                    >
+                      <Sparkles size={16} />
+                    </button>
+                  )}
+
                   <button
                     onClick={() => handleSpeak(card.hanzi)}
                     className="p-2 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors cursor-pointer"

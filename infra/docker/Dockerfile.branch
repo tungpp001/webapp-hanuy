@@ -1,0 +1,17 @@
+FROM node:24-alpine AS builder
+WORKDIR /app
+COPY package.json package-lock.json ./
+COPY packages/shared ./packages/shared
+COPY packages/database ./packages/database
+COPY packages/backend ./packages/backend
+COPY packages/web ./packages/web
+RUN npm run build:shared && npm run build:database && npm run build:backend && npm run build:web
+
+FROM node:24-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+ENV TZ=Asia/Ho_Chi_Minh
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/packages ./packages
+EXPOSE 8080
+CMD ["node", "packages/backend/dist/index.js"]

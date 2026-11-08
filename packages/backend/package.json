@@ -1,0 +1,23 @@
+{
+  "name": "@oc-pos/backend",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@oc-pos/shared": "1.0.0",
+    "@oc-pos/database": "1.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "node dist/server.js",
+    "test": "npm run build && node --test dist/**/*.test.js"
+  }
+}

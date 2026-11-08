@@ -1,15 +1,23 @@
 {
-  "name": "web-app",
+  "name": "oc-pos-saas-monorepo",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
-    "lint": "oxlint",
-    "preview": "vite preview"
+    "dev:hanyuflow": "npm --workspace=@oc-pos/hanyuflow run dev",
+    "build:hanyuflow": "npm --workspace=@oc-pos/hanyuflow run build",
+    "build:shared": "npm --workspace=@oc-pos/shared run build",
+    "build:database": "npm --workspace=@oc-pos/database run build",
+    "build:backend": "npm --workspace=@oc-pos/backend run build",
+    "build:web": "npm --workspace=@oc-pos/web run build",
+    "build": "npm run build:shared && npm run build:database && npm run build:backend && npm run build:web",
+    "test": "node --test packages/shared/dist/**/*.test.js packages/database/dist/**/*.test.js packages/backend/dist/**/*.test.js",
+    "lint": "oxlint packages/shared/src packages/database/src packages/backend/src packages/web/src",
+    "typecheck": "npm --workspace=@oc-pos/shared run typecheck && npm --workspace=@oc-pos/database run typecheck && npm --workspace=@oc-pos/backend run typecheck && npm --workspace=@oc-pos/web run typecheck"
   },
   "dependencies": {
     "canvas-confetti": "^1.9.4",

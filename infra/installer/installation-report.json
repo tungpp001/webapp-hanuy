@@ -1,0 +1,31 @@
+{
+  "reportId": "f48ab999-4a57-4568-a506-1b9e0ae5e7e3",
+  "installedAtIso": "2026-11-08T07:22:59.836Z",
+  "branchCode": "VK01",
+  "hardwareCheck": {
+    "cpuCores": 12,
+    "recommendedMinCpuCores": 4,
+    "totalRamGb": 23.9,
+    "recommendedMinRamGb": 8,
+    "osPlatform": "win32",
+    "osArch": "x64",
+    "meetsRecommendedSpec": true
+  },
+  "networkAndPrinters": {
+    "primaryServerIp": "192.168.10.10",
+    "standbyServerIp": "192.168.10.11",
+    "kitchenPrinterIp": "192.168.10.51:9100",
+    "cashierPrinterIp": "192.168.10.52:9100",
+    "publicDbPortExposed": false
+  },
+  "databaseAndMigrationCheck": {
+    "initialized": true,
+    "migrationVersion": "0001_initial_schema"
+  },
+  "healthAndBackupCheck": {
+    "healthStatus": "OK",
+    "backupVerifiedRestorable": true,
+    "backupChecksumSha256": "0446d5d8eb83803745800fb668436175fcc8086e8b472f8dca0ae4e7e5e91118",
+    "replicationStandbyAckVerified": true
+  }
+}

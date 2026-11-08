@@ -1,0 +1,84 @@
+version: '3.9'
+
+# =============================================================================
+# OcPOS SaaS — Branch Server Deployment (Primary + Standby + Local LAN Web/API)
+# SECURITY RULE: PostgreSQL (5432) is bound strictly to internal/loopback interface
+# and NEVER exposed directly to the public Internet.
+# =============================================================================
+
+services:
+  branch-postgres-primary:
+    image: postgres:16-alpine
+    container_name: ocpos-branch-pg-primary
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ocpos_branch}
+      POSTGRES_USER: ${POSTGRES_USER:-ocpos_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD_REQUIRED}
+      TZ: Asia/Ho_Chi_Minh
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=replica"
+      - "-c"
+      - "synchronous_commit=on"
+      - "-c"
+      - "max_wal_senders=5"
+      - "-c"
+      - "timezone=Asia/Ho_Chi_Minh"
+    volumes:
+      - branch_pg_primary_data:/var/lib/postgresql/data
+      - ./backups:/var/backups/ocpos
+    networks:
+      - branch_internal_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-ocpos_admin} -d $${POSTGRES_DB:-ocpos_branch}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  branch-postgres-standby:
+    image: postgres:16-alpine
+    container_name: ocpos-branch-pg-standby
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ocpos_branch}
+      POSTGRES_USER: ${POSTGRES_USER:-ocpos_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD_REQUIRED}
+      TZ: Asia/Ho_Chi_Minh
+    volumes:
+      - branch_pg_standby_data:/var/lib/postgresql/data
+    networks:
+      - branch_internal_net
+    depends_on:
+      branch-postgres-primary:
+        condition: service_healthy
+
+  branch-api:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.branch
+    container_name: ocpos-branch-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      TZ: Asia/Ho_Chi_Minh
+      BRANCH_CODE: ${BRANCH_CODE:-VK01}
+      KITCHEN_PRINTER_IP: ${KITCHEN_PRINTER_IP:-192.168.10.51}
+      CASHIER_PRINTER_IP: ${CASHIER_PRINTER_IP:-192.168.10.52}
+      REQUIRE_DUAL_NODE_ACK: "true"
+    ports:
+      - "${BRANCH_LAN_BIND_IP:-127.0.0.1}:8080:8080"
+    networks:
+      - branch_internal_net
+    depends_on:
+      branch-postgres-primary:
+        condition: service_healthy
+
+networks:
+  branch_internal_net:
+    driver: bridge
+
+volumes:
+  branch_pg_primary_data:
+  branch_pg_standby_data:

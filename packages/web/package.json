@@ -1,0 +1,20 @@
+{
+  "name": "@oc-pos/web",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@oc-pos/shared": "1.0.0",
+    "@oc-pos/database": "1.0.0",
+    "@oc-pos/backend": "1.0.0",
+    "lucide-react": "^1.37.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json && vite build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "preview": "vite preview"
+  }
+}

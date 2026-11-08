@@ -1,0 +1,20 @@
+{
+  "name": "HanYuFlow 汉语流 - Học Tiếng Trung Giao Tiếp",
+  "short_name": "HanYuFlow",
+  "description": "Ứng dụng học tiếng Trung giao tiếp thực chiến, Video Shadowing, Flashcard HSK 1-6 và Phản xạ AI",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0c0a09",
+  "theme_color": "#dc2626",
+  "orientation": "portrait-primary",
+  "categories": ["education", "productivity", "language"],
+  "icons": [
+    {
+      "src": "pwa-icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,222 @@
+import type { ShadowingVideo } from '../types/shadowing';
+
+export const SHADOWING_VIDEOS: ShadowingVideo[] = [
+  // =========================================================================
+  // PANDA STUDIO (@PandaStudio24) EXCLUSIVE SHADOWING SERIES
+  // =========================================================================
+  {
+    id: 'panda-studio-daily-1',
+    title: '🐼 Panda Studio: 100 Mẫu Câu Giao Tiếp Cơ Bản Đời Sống Hàng Ngày (HSK 1-2)',
+    youtubeId: 'M7lc1UVf-VE',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&auto=format&fit=crop&q=80',
+    category: 'daily',
+    level: 'HSK 1-2',
+    durationText: '02:30',
+    description: 'Bài học từ kênh Panda Studio (@PandaStudio24) - Luyện phản xạ các câu chào hỏi, hỏi thăm sức khỏe, cảm ơn và xin lỗi trong giao tiếp thực tế.',
+    subtitles: [
+      {
+        id: 'pd1-1',
+        startTime: 0,
+        endTime: 3.5,
+        speaker: 'Panda Studio',
+        hanzi: '你好！好久不见，你最近身体怎么样？',
+        pinyin: 'Nǐ hǎo! Hǎojiǔ bú jiàn, nǐ zuìjìn shēntǐ zěnmeyàng?',
+        sinoVietnamese: 'Nhĩ hảo! Hảo cửu bất kiến, nhĩ tối cận thân thể thướng ma dạng?',
+        vietnamese: 'Chào bạn! Lâu rồi không gặp, gần đây sức khỏe của bạn thế nào?',
+      },
+      {
+        id: 'pd1-2',
+        startTime: 3.6,
+        endTime: 7.0,
+        speaker: 'Panda Studio',
+        hanzi: '我挺好的，每天都坚持锻炼身体。你呢？',
+        pinyin: 'Wǒ tǐng hǎo de, měitiān dōu jiānchí duànliàn shēntǐ. Nǐ ne?',
+        sinoVietnamese: 'Ngã đĩnh hảo đích, mỗi thiên đô kiên trì đoán luyện thân thể. Nhĩ ni?',
+        vietnamese: 'Mình rất khỏe, ngày nào cũng kiên trì tập thể dục. Còn bạn thì sao?',
+      },
+      {
+        id: 'pd1-3',
+        startTime: 7.1,
+        endTime: 11.0,
+        speaker: 'Panda Studio',
+        hanzi: '我也很好，最近在努力学习中文，想去中国旅游。',
+        pinyin: 'Wǒ yě hěn hǎo, zuìjìn zài nǔlì xuéxí zhōngwén, xiǎng qù Zhōngguó lǚyóu.',
+        sinoVietnamese: 'Ngã dã hãn hảo, tối cận tại nỗ lực học tập trung văn, tưởng khứ Trung Quốc lữ du.',
+        vietnamese: 'Mình cũng rất tốt, gần đây đang chăm chỉ học tiếng Trung, muốn đi du lịch Trung Quốc.',
+      },
+      {
+        id: 'pd1-4',
+        startTime: 11.1,
+        endTime: 15.0,
+        speaker: 'Panda Studio',
+        hanzi: '太棒了！只要多听多说，你的中文一定会越来越好！',
+        pinyin: 'Tài bàng le! Zhǐyào duō tīng duō shuō, nǐ de zhōngwén yídìng huì yuè lái yuè hǎo!',
+        sinoVietnamese: 'Thái bổng liễu! Chỉ yếu đa thính đa thuyết, nhĩ đích trung văn nhất định hội việt lai việt hảo!',
+        vietnamese: 'Tuyệt vời quá! Chỉ cần nghe nhiều nói nhiều, tiếng Trung của bạn nhất định sẽ ngày càng tiến bộ!',
+      }
+    ]
+  },
+
+  {
+    id: 'panda-studio-restaurant',
+    title: '🐼 Panda Studio: Luyện Nghe Hội Thoại Quán Ăn & Mua Sắm (HSK 2-3)',
+    youtubeId: 'd0yGdNEWdn0',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80',
+    category: 'food',
+    level: 'HSK 3-4',
+    durationText: '02:45',
+    description: 'Bài học từ kênh Panda Studio (@PandaStudio24) - Học mẫu câu gọi món ăn, dặn dò khẩu vị, hỏi chương trình khuyến mãi và thanh toán hóa đơn.',
+    subtitles: [
+      {
+        id: 'pd2-1',
+        startTime: 0,
+        endTime: 4.0,
+        speaker: 'Khách Hàng',
+        hanzi: '服务员，请问你们店里有什么招牌菜可以推荐吗？',
+        pinyin: 'Fúwùyuán, qǐngwèn nǐmen diàn lǐ yǒu shénme zhāopái cài kěyǐ tuījiàn ma?',
+        sinoVietnamese: 'Phục vụ viên, thỉnh vấn nhĩ môn điếm lý hữu thập ma chiêu bài thái khả dĩ thôi tiến ma?',
+        vietnamese: 'Phục vụ ơi, xin hỏi quán mình có món đặc sản nào ngon có thể gợi ý cho tôi không?',
+      },
+      {
+        id: 'pd2-2',
+        startTime: 4.1,
+        endTime: 8.5,
+        speaker: 'Nhân Viên',
+        hanzi: '我们家的北京烤鸭和宫保鸡丁非常受欢迎，您可以尝一尝。',
+        pinyin: 'Wǒmen jiā de Běijīng kǎoyā hé gōngbǎo jīdīng fēicháng shòu huānyíng, nín kěyǐ cháng yi cháng.',
+        sinoVietnamese: 'Ngã môn gia đích Bắc Kinh khảo áp hòa cung bảo kê đinh phi thường thụ hoan nghênh, nâm khả dĩ thường nhất thường.',
+        vietnamese: 'Món vịt quay Bắc Kinh và gà xào Cung Bảo nhà em rất được ưa chuộng, anh chị có thể nếm thử ạ.',
+      },
+      {
+        id: 'pd2-3',
+        startTime: 8.6,
+        endTime: 12.5,
+        speaker: 'Khách Hàng',
+        hanzi: '好的，那就来一份烤鸭，请少放一点油和盐。',
+        pinyin: 'Hǎo de, nà jiù lái yí fèn kǎoyā, qǐng shǎo fàng yìdiǎn yóu hé yán.',
+        sinoVietnamese: 'Hảo đích, na tựu lai nhất phần khảo áp, thỉnh thiểu phóng nhất điểm du hòa diêm.',
+        vietnamese: 'Được rồi, vậy cho tôi một phần vịt quay, làm ơn cho ít dầu và bớt mặn nhé.',
+      },
+      {
+        id: 'pd2-4',
+        startTime: 12.6,
+        endTime: 16.0,
+        speaker: 'Khách Hàng',
+        hanzi: '买单！请问支持微信支付还是支付宝？——都可以的！',
+        pinyin: 'Mǎidān! Qǐngwèn zhīchí wēixìn zhīfù háishì zhīfùbǎo? —— Dōu kěyǐ de!',
+        sinoVietnamese: 'Mãi đơn! Thỉnh vấn chi trì uy tín chi phó hoàn thị chi phó bảo? —— Đô khả dĩ đích!',
+        vietnamese: 'Tính tiền! Xin hỏi bên mình nhận thanh toán WeChat hay Alipay? —— Cả hai đều được ạ!',
+      }
+    ]
+  },
+
+  {
+    id: 'panda-studio-office',
+    title: '🐼 Panda Studio: Tiếng Trung Công Sở & Làm Việc Với Đồng Nghiệp (HSK 3-4)',
+    youtubeId: '2ZIpFytCSVc',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=600&auto=format&fit=crop&q=80',
+    category: 'interview',
+    level: 'HSK 3-4',
+    durationText: '03:10',
+    description: 'Bài học từ kênh Panda Studio (@PandaStudio24) - Luyện giao tiếp trong văn phòng công ty: Gửi tài liệu báo cáo, thảo luận dự án và bàn giao công việc.',
+    subtitles: [
+      {
+        id: 'pd3-1',
+        startTime: 0,
+        endTime: 4.2,
+        speaker: 'Đồng Nghiệp A',
+        hanzi: '王经理，这份项目的市场调研报告我已经发到您的邮箱了。',
+        pinyin: 'Wáng jīnglǐ, zhè fèn xiàngmù de shìchǎng diàoyán bàogào wǒ yǐjīng fādào nín de yóuxiāng le.',
+        sinoVietnamese: 'Vương kinh lý, giá phần hạng mục đích thị trường điệu nghiên báo cáo ngã dĩ kinh phát đáo nâm đích bưu tương liễu.',
+        vietnamese: 'Giám đốc Vương, bản báo cáo nghiên cứu thị trường của dự án này tôi đã gửi vào email của sếp rồi ạ.',
+      },
+      {
+        id: 'pd3-2',
+        startTime: 4.3,
+        endTime: 8.5,
+        speaker: 'Giám Đốc Vương',
+        hanzi: '好的，辛苦了！下午两点开会时，请你向大家做个简短的汇报。',
+        pinyin: 'Hǎo de, xīnkǔ le! Xiàwǔ liǎng diǎn kāihuì shí, qǐng nǐ xiàng dàjiā zuò gè jiǎnduǎn de huìbào.',
+        sinoVietnamese: 'Hảo đích, tân khổ liễu! Hạ ngọ lưỡng điểm khai hội thời, thỉnh nhĩ hướng đại gia tác cá giản đoản đích hội báo.',
+        vietnamese: 'Được rồi, vất vả cho cậu! Lúc 2 giờ chiều họp, nhờ cậu trình bày báo cáo ngắn gọn cho mọi người nhé.',
+      },
+      {
+        id: 'pd3-3',
+        startTime: 8.6,
+        endTime: 12.8,
+        speaker: 'Đồng Nghiệp A',
+        hanzi: '没问题，我已经准备好演示文稿了，保证按时完成。',
+        pinyin: 'Méi wèntí, wǒ yǐjīng zhǔnbèi hǎo yǎnshì wéngǎo le, bǎozhèng ànshí wánchéng.',
+        sinoVietnamese: 'Một vấn đề, ngã dĩ kinh chuẩn bị hảo diễn thị văn cảo liễu, bảo chứng án thời hoàn thành.',
+        vietnamese: 'Không vấn đề gì ạ, tôi đã chuẩn bị sẵn slide thuyết trình rồi, đảm bảo hoàn thành đúng giờ.',
+      },
+      {
+        id: 'pd3-4',
+        startTime: 12.9,
+        endTime: 16.0,
+        speaker: 'Giám Đốc Vương',
+        hanzi: '很好，大家团结合作，这次项目一定会取得圆满成功！',
+        pinyin: 'Hěn hǎo, dàjiā tuánjié hézuò, zhè cì xiàngmù yídìng huì qǔdé yuánmǎn chénggōng!',
+        sinoVietnamese: 'Hãn hảo, đại gia đoàn kết hợp tác, giá thứ hạng mục nhất định hội thủ đắc viên mãn thành công!',
+        vietnamese: 'Rất tốt, mọi người đoàn kết hợp tác thì dự án lần này chắc chắn sẽ thành công viên mãn!',
+      }
+    ]
+  },
+
+  {
+    id: 'panda-studio-friends',
+    title: '🐼 Panda Studio: Hội Thoại Kết Bạn & Sở Thích Của Giới Trẻ (HSK 1-2)',
+    youtubeId: 'zpOULjyy-n8',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&auto=format&fit=crop&q=80',
+    category: 'vlog',
+    level: 'HSK 1-2',
+    durationText: '02:00',
+    description: 'Bài học từ kênh Panda Studio (@PandaStudio24) - Mẫu câu làm quen bạn mới, hỏi về sở thích xem phim, nghe nhạc, thể thao và quét mã kết bạn WeChat.',
+    subtitles: [
+      {
+        id: 'pd4-1',
+        startTime: 0,
+        endTime: 3.8,
+        speaker: 'Tiểu Vũ',
+        hanzi: '周末你平时喜欢做什么？有什么特别的爱好吗？',
+        pinyin: 'Zhōumò nǐ píngshí xǐhuan zuò shénme? Yǒu shénme tèbié de àihào ma?',
+        sinoVietnamese: 'Chu mạt nhĩ bình thời hỉ hoan tác thập ma? Hữu thập ma đặc biệt đích ái hảo ma?',
+        vietnamese: 'Cuối tuần bình thường bạn thích làm gì? Có sở thích gì đặc biệt không?',
+      },
+      {
+        id: 'pd4-2',
+        startTime: 3.9,
+        endTime: 7.8,
+        speaker: 'Tiểu Hoa',
+        hanzi: '我喜欢听音乐和去电影院看电影，偶尔也去游泳。',
+        pinyin: 'Wǒ xǐhuan tīng yīnyuè hé qù diànyǐngyuàn kàn diànyǐng, ǒu\'ěr yě qù yóuyǒng.',
+        sinoVietnamese: 'Ngã hỉ hoan thính âm nhạc hòa khứ điện ảnh viện khán điện ảnh, ngẫu nhĩ dã khứ du vịnh.',
+        vietnamese: 'Mình thích nghe nhạc và đến rạp xem phim, thỉnh thoảng cũng đi bơi nữa.',
+      },
+      {
+        id: 'pd4-3',
+        startTime: 7.9,
+        endTime: 12.0,
+        speaker: 'Tiểu Vũ',
+        hanzi: '我也很喜欢游泳！这个周六我们一起去体育馆吧？',
+        pinyin: 'Wǒ yě hěn xǐhuan yóuyǒng! Zhè gè zhōuliù wǒmen yìqǐ qù tǐyùguǎn ba?',
+        sinoVietnamese: 'Ngã dã hãn hỉ hoan du vịnh! Giá cá chu lục ngã môn nhất khởi khứ thể dục quán ba?',
+        vietnamese: 'Mình cũng rất thích đi bơi! Thứ bảy tuần này chúng mình cùng đến nhà thi đấu nhé?',
+      },
+      {
+        id: 'pd4-4',
+        startTime: 12.1,
+        endTime: 15.0,
+        speaker: 'Tiểu Hoa',
+        hanzi: '好主意！我把手机号发给你，周六不见不散！',
+        pinyin: 'Hǎo zhǔyi! Wǒ bǎ shǒujīhào fā gěi nǐ, zhōuliù bú jiàn bú sàn!',
+        sinoVietnamese: 'Hảo chủ ý! Ngã bả thủ cơ hiệu phát cấp nhĩ, chu lục bất kiến bất tán!',
+        vietnamese: 'Ý kiến hay đó! Mình gửi số điện thoại cho bạn nhé, thứ bảy không gặp không về!',
+      }
+    ]
+  }
+];

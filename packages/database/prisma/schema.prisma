@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id              String       @id @default(uuid()) @db.Uuid
+  code            String       @unique
+  brandName       String       @map("brand_name")
+  status          String       @default("ACTIVE") // ACTIVE, SUSPENDED, TERMINATED
+  logoUrl         String?      @map("logo_url")
+  primaryColor    String       @default("#D9381E") @map("primary_color")
+  coverImageUrl   String?      @map("cover_image_url")
+  bannerUrl       String?      @map("banner_url")
+  customDomain    String?      @unique @map("custom_domain")
+  configVersion   Int          @default(1) @map("config_version")
+  createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  contracts       Contract[]
+  branches        Branch[]
+  menuItems       MenuItem[]
+  menuReleases    MenuRelease[]
+
+  @@map("tenants")
+}
+
+model Contract {
+  id                  String   @id @default(uuid()) @db.Uuid
+  tenantId            String   @map("tenant_id") @db.Uuid
+  billingCycle        String   @map("billing_cycle") // MONTHLY, YEARLY
+  startDate           DateTime @map("start_date") @db.Date
+  endDate             DateTime @map("end_date") @db.Date
+  gracePeriodDays     Int      @default(7) @map("grace_period_days")
+  warningDaysBefore   Int[]    @default([30, 14, 7, 3, 1]) @map("warning_days_before")
+  termsJson           Json     @default("{}") @map("terms_json")
+  status              String   @default("ACTIVE")
+  signedLicenseToken  String   @map("signed_license_token")
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant              Tenant   @relation(fields: [tenantId], references: [id])
+
+  @@map("contracts")
+}
+
+model Branch {
+  id                    String    @id @default(uuid()) @db.Uuid
+  tenantId              String    @map("tenant_id") @db.Uuid
+  code                  String
+  name                  String
+  address               String
+  phone                 String?
+  timezone              String    @default("Asia/Ho_Chi_Minh")
+  businessDayStartHour  Int       @default(4) @map("business_day_start_hour")
+  status                String    @default("ACTIVE")
+  activeMenuVersion     Int       @default(1) @map("active_menu_version")
+  primaryServerId       String    @map("primary_server_id")
+  standbyServerId       String    @map("standby_server_id")
+  clusterEpoch          Int       @default(1) @map("cluster_epoch")
+  lastCloudSyncAt       DateTime? @map("last_cloud_sync_at") @db.Timestamptz(6)
+  lastBackupAt          DateTime? @map("last_backup_at") @db.Timestamptz(6)
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant                Tenant    @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, code])
+  @@map("branches")
+}
+
+model MenuItem {
+  id                              String   @id @default(uuid()) @db.Uuid
+  tenantId                        String   @map("tenant_id") @db.Uuid
+  categoryName                    String   @map("category_name")
+  code                            String
+  name                            String
+  description                     String?
+  imageUrl                        String?  @map("image_url")
+  sellingUnit                     String   @map("selling_unit") // PORTION, KG, PLATE, COMBO
+  isWeightBased                   Boolean  @default(false) @map("is_weight_based")
+  standardPriceVnd                BigInt   @map("standard_price_vnd")
+  standardPricePerKgVnd           BigInt?  @map("standard_price_per_kg_vnd")
+  standardEstimatedCostVnd        BigInt?  @map("standard_estimated_cost_vnd")
+  standardEstimatedCostPerKgVnd   BigInt?  @map("standard_estimated_cost_per_kg_vnd")
+  standardPrepMinutes             Int      @default(15) @map("standard_prep_minutes")
+  allowedPrepNotes                String[] @map("allowed_prep_notes")
+  defaultStatus                   String   @default("AVAILABLE") @map("default_status")
+  version                         Int      @default(1)
+  copiedFromItemId                String?  @map("copied_from_item_id") @db.Uuid
+  hasTransactions                 Boolean  @default(false) @map("has_transactions")
+  createdAt                       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant                          Tenant   @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, code])
+  @@map("menu_items")
+}
+
+model MenuRelease {
+  id                  String    @id @default(uuid()) @db.Uuid
+  tenantId            String    @map("tenant_id") @db.Uuid
+  versionNumber       Int       @map("version_number")
+  scheduledFor        DateTime  @map("scheduled_for") @db.Timestamptz(6)
+  publishedAt         DateTime? @map("published_at") @db.Timestamptz(6)
+  snapshotJson        Json      @map("snapshot_json")
+  createdByUserId     String    @map("created_by_user_id") @db.Uuid
+  restoredFromVersion Int?      @map("restored_from_version")
+  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant              Tenant    @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, versionNumber])
+  @@map("menu_releases")
+}
